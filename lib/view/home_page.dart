@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:store/controllers/productController.dart';
 import 'package:store/services/select_image.dart';
 import 'package:store/services/upload_image.dart';
 
@@ -33,11 +34,15 @@ class _HomePageState extends State<HomePage>{
             color: Colors.red,
           ),
           ElevatedButton(
-              onPressed: () async {
-                final imagen = await getImage();
-                setState(() {
-                  imagen_to_upload = File(imagen!.path);
-                });
+              onPressed: () {
+                //final imagen = await getImage();
+                //setState(() {
+                //  imagen_to_upload = File(imagen!.path);
+                //});
+                print('asdf');
+
+                ProductController productController = new ProductController();
+                
               }, child: Text("Seleccionar imagen")),
           ElevatedButton(
               onPressed: () async{
@@ -45,9 +50,9 @@ class _HomePageState extends State<HomePage>{
                   {
                     return;
                   }
-                final uploaded = await uploadImage(imagen_to_upload!);
+                // final uploaded = await uploadImage(imagen_to_upload!);
 
-
+                print('asdf');
           }, child: Text("Subir a firebase"))
 
     ],
