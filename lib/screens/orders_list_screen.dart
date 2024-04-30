@@ -1,6 +1,6 @@
-import 'package:aplicacion_ventas/screens/product_list_screen.dart';
-import 'package:aplicacion_ventas/widgets/confirmation_purchase_popup.dart';
-import 'package:aplicacion_ventas/widgets/container_button_motel.dart';
+import 'package:store/screens/product_list_screen.dart';
+import 'package:store/widgets/confirmation_purchase_popup.dart';
+import 'package:store/widgets/container_button_motel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

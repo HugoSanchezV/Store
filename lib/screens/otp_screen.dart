@@ -1,4 +1,4 @@
-import 'package:aplicacion_ventas/screens/otp_verify_screen.dart';
+import 'package:store/screens/otp_verify_screen.dart';
 import 'package:flutter/material.dart';
 
 class OTPScreen extends StatefulWidget {

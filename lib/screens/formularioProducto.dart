@@ -1,4 +1,4 @@
-import 'package:aplicacion_ventas/screens/product_list_screen.dart';
+import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';

@@ -1,8 +1,8 @@
-import 'package:aplicacion_ventas/Presentation/Screens/main_screen.dart';
-import 'package:aplicacion_ventas/screens/menu.dart';
+import 'package:store/Presentation/Screens/main_screen.dart';
+import 'package:store/screens/menu.dart';
 import 'package:flutter/material.dart';
-import 'package:aplicacion_ventas/screens/cart_screen.dart';
-import 'package:aplicacion_ventas/screens/login_screen.dart';
+import 'package:store/screens/cart_screen.dart';
+import 'package:store/screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);

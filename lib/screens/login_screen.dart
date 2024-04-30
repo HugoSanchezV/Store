@@ -1,6 +1,6 @@
-import 'package:aplicacion_ventas/screens/forgot_screen.dart';
-import 'package:aplicacion_ventas/screens/product_screen.dart';
-import 'package:aplicacion_ventas/screens/signup_screen.dart';
+import 'package:store/screens/forgot_screen.dart';
+import 'package:store/screens/product_screen.dart';
+import 'package:store/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../Presentation/Screens/main_screen.dart';

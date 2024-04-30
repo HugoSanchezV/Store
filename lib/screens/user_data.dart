@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aplicacion_ventas/screens/user_change_data.dart';
+import 'package:store/screens/user_change_data.dart';
 
 class UserDataScreen extends StatelessWidget {
   final String nombre = 'Juan';

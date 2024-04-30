@@ -1,7 +1,7 @@
-import 'package:aplicacion_ventas/screens/formularioProducto.dart';
-import 'package:aplicacion_ventas/screens/login_screen.dart';
-import 'package:aplicacion_ventas/screens/orders_list_screen.dart';
-import 'package:aplicacion_ventas/screens/product_list_screen.dart';
+import 'package:store/screens/formularioProducto.dart';
+import 'package:store/screens/login_screen.dart';
+import 'package:store/screens/orders_list_screen.dart';
+import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class AdminHomePage extends StatelessWidget {

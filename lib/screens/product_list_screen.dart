@@ -1,7 +1,7 @@
-import 'package:aplicacion_ventas/screens/formularioModificarProducto.dart';
-import 'package:aplicacion_ventas/widgets/confirmation_purchase_popup.dart';
-import 'package:aplicacion_ventas/widgets/container_button_motel.dart';
-import 'package:aplicacion_ventas/widgets/container_icon_button_model.dart';
+import 'package:store/screens/formularioModificarProducto.dart';
+import 'package:store/widgets/confirmation_purchase_popup.dart';
+import 'package:store/widgets/container_button_motel.dart';
+import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

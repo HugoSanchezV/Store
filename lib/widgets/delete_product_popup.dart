@@ -1,4 +1,4 @@
-import 'package:aplicacion_ventas/widgets/container_icon_button_model.dart';
+import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

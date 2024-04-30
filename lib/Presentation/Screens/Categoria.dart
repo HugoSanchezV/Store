@@ -1,6 +1,6 @@
-import 'package:aplicacion_ventas/Presentation/Screens/shopping_list_screen.dart';
-import 'package:aplicacion_ventas/screens/cart_screen.dart';
-import 'package:aplicacion_ventas/screens/user_data.dart';
+import 'package:store/Presentation/Screens/shopping_list_screen.dart';
+import 'package:store/screens/cart_screen.dart';
+import 'package:store/screens/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';

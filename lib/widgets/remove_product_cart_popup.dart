@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:aplicacion_ventas/screens/review_screen.dart';
-import 'package:aplicacion_ventas/widgets/container_button_motel.dart';
+import 'package:store/screens/review_screen.dart';
+import 'package:store/widgets/container_button_motel.dart';
 
 import '../screens/product_list_screen.dart';
 
