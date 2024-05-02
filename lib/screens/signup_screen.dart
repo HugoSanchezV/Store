@@ -3,6 +3,10 @@ import 'package:store/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:store/screens/cart_screen.dart';
 import 'package:store/screens/login_screen.dart';
+import 'package:store/screens/signup_success_screen.dart';
+
+import '../controllers/userController.dart';
+import '../tdo/userTDO.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -170,11 +174,26 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (_formKey.currentState!.validate()) {
                             // Guardar los datos del formulario
                             _formKey.currentState!.save();
+
+                            var userData = {
+                              'name': '$_nombre',
+                              'email': '$_correo',
+                              'password': '$_contrasena',
+                              'phone': '$_telefono',
+                              'token': 'token',
+                              'auth': 0,
+                              'admin': 0,
+                              'address' : '$_domicilio'
+                            };
+
+                            print(userData);
+                            UserController user = UserController();
+                            user.create(UserTDO(userData));
                             // Aquí puedes hacer lo que necesites con los datos ingresados
                             // Luego, puedes navegar a la siguiente pantalla
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AdminHomePage()),
+                              MaterialPageRoute(builder: (context) => SignUpSuccessScreen()),
                             );
                           }
                         },
