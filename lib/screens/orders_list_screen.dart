@@ -1,4 +1,5 @@
 import 'package:store/screens/product_list_screen.dart';
+import 'package:store/screens/ventana_pedidio.dart';
 import 'package:store/widgets/confirmation_purchase_popup.dart';
 import 'package:store/widgets/container_button_motel.dart';
 import 'package:flutter/cupertino.dart';
@@ -118,7 +119,12 @@ class OrderList extends StatelessWidget {
                         scrollDirection: Axis.vertical,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return Container(
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => PedidoScreen()));
+                            },
+                          child: Container(
                             margin: EdgeInsets.symmetric(vertical: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -161,12 +167,13 @@ class OrderList extends StatelessWidget {
                                         fontSize: 18,
                                         fontWeight: FontWeight.w900,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 SizedBox(width: 1),
                               ],
                             ),
+                          ),
                           );
                         },
                       ),
