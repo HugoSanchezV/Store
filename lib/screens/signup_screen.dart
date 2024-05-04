@@ -172,8 +172,77 @@ class _SignupScreenState extends State<SignupScreen> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Guardar los datos del formulario
                             _formKey.currentState!.save();
+
+                            if (_contrasena != _confirmarContrasena) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Las contraseñas no coinciden'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (_nombre.isEmpty || _nombre.contains(RegExp(r'[0-9]'))) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Por favor, ingresa un nombre válido sin dígitos'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (!_correo.contains('@') || !_correo.contains('.')) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Por favor, ingresa un correo electrónico válido'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (_telefono.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(_telefono)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Por favor, ingresa un número de teléfono válido (10 dígitos)'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (_domicilio.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Por favor, ingresa tu domicilio'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (_contrasena.isEmpty || _contrasena.length < 8) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Por favor, ingresa una contraseña de al menos 8 caracteres'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (_contrasena != _confirmarContrasena) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Las contraseñas no coinciden'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            } 
 
                             var userData = {
                               'name': '$_nombre',
@@ -183,14 +252,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               'token': 'token',
                               'auth': 0,
                               'admin': 0,
-                              'address' : '$_domicilio'
+                              'address': '$_domicilio'
                             };
 
                             print(userData);
                             UserController user = UserController();
                             user.create(UserTDO(userData));
-                            // Aquí puedes hacer lo que necesites con los datos ingresados
-                            // Luego, puedes navegar a la siguiente pantalla
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => SignUpSuccessScreen()),
