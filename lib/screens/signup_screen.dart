@@ -146,6 +146,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             return 'Por favor, ingresa tu contraseña';
                           } else if (value.length < 8) {
                             return 'La contraseña debe tener al menos 8 caracteres';
+                          } else {
+                            _contrasena = value;
                           }
                           return null;
                         },
