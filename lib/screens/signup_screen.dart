@@ -75,6 +75,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu correo';
+                          } else if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return 'Por favor, ingresa un correo electrónico válido';
                           }
                           return null;
                         },
@@ -92,6 +96,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu número de teléfono';
+                          } else if (value.length != 10 ||
+                              !RegExp(r'^[0-9]+$').hasMatch(value)) {
+                            return 'Por favor, ingresa un número de teléfono válido (10 dígitos)';
                           }
                           return null;
                         },
@@ -124,7 +131,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.lock),
                           suffixIcon: IconButton(
-                            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                            icon: Icon(_obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off),
                             onPressed: () {
                               setState(() {
                                 _obscureText = !_obscureText;
@@ -135,6 +144,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu contraseña';
+                          } else if (value.length < 8) {
+                            return 'La contraseña debe tener al menos 8 caracteres';
                           }
                           return null;
                         },
@@ -143,106 +154,37 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                       SizedBox(height: 10),
-                TextFormField(
-                  obscureText: _obscureTextTwo,
-                  decoration: InputDecoration(
-                    labelText: "Confirmar contraseña",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureTextTwo ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () {
-                        setState(() {
-                          _obscureTextTwo = !_obscureTextTwo;
-                        });
-                      },
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, ingresa tu contraseña';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _contrasena = value!;
-                  },
-                ),
-                  SizedBox(height: 25),
+                      TextFormField(
+                        obscureText: _obscureTextTwo,
+                        decoration: InputDecoration(
+                          labelText: "Confirmar contraseña",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(_obscureTextTwo
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _obscureTextTwo = !_obscureTextTwo;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, ingresa tu contraseña';
+                          } else if (value != _contrasena) {
+                            return 'Las contraseñas no coinciden';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
-
-                            if (_contrasena != _confirmarContrasena) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Las contraseñas no coinciden'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (_nombre.isEmpty || _nombre.contains(RegExp(r'[0-9]'))) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Por favor, ingresa un nombre válido sin dígitos'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (!_correo.contains('@') || !_correo.contains('.')) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Por favor, ingresa un correo electrónico válido'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (_telefono.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(_telefono)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Por favor, ingresa un número de teléfono válido (10 dígitos)'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (_domicilio.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Por favor, ingresa tu domicilio'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (_contrasena.isEmpty || _contrasena.length < 8) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Por favor, ingresa una contraseña de al menos 8 caracteres'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-
-                            if (_contrasena != _confirmarContrasena) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Las contraseñas no coinciden'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            } 
 
                             var userData = {
                               'name': '$_nombre',
@@ -261,7 +203,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SignUpSuccessScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpSuccessScreen()),
                             );
                           }
                         },
@@ -293,7 +236,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => LoginScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
                               );
                             },
                             child: Text(
