@@ -1,16 +1,26 @@
+import 'dart:ffi';
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioProducto.dart';
 import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:io';
+import '../services/select_image.dart';
+import '../services/upload_image.dart';
+import '../tdo/productTDO.dart';
 import 'login_screen.dart';
 import 'orders_list_screen.dart';
 
 class ModificarProducto extends StatefulWidget {
+  final String id;
+  ModificarProducto({required this.id});
+
   @override
-  _ModificarProductoState createState() => _ModificarProductoState();
+  _ModificarProductoState createState() => _ModificarProductoState(id: this.id);
 }
 
 class _ModificarProductoState extends State<ModificarProducto> {
+  final String id;
+  File? imagen_to_upload;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _descripcionController = TextEditingController();
@@ -20,9 +30,78 @@ class _ModificarProductoState extends State<ModificarProducto> {
   TextEditingController _cantidadController = TextEditingController();
   TextEditingController _precioController = TextEditingController();
   TextEditingController _descuentoController = TextEditingController();
+  TextEditingController _categoriaController = TextEditingController();
   String _imageUrl = '';
 
-  void _ModificarProducto() {
+  _ModificarProductoState({required this.id});
+
+  @override
+  void initState() {
+    super.initState();
+    ProductController productController = ProductController();
+    productController.getById(id).then((product) {
+      // Update UI with product data
+      _nombreController.text = product[0]['nombre'];
+      _descripcionController.text = product[0]['descripcion'];
+      _colorController.text = product[0]['color'];
+      _tallaController.text = product[0]['talla'];
+      _marcaController.text = product[0]['marca'];
+      _cantidadController.text = product[0]['cantidad'].toString();
+      _precioController.text = product[0]['precio'].toString();
+      _descuentoController.text = product[0]['descuento'].toString();
+      _categoriaController.text = product[0]['categoria'].toString();
+      _imageUrl = product[0]['img'];
+      // ... update other controllers similarly
+      setState(() {}); // Trigger UI rebuild
+    });
+  }
+
+  List checkData() {
+    List errors = [];
+    if (_nombreController.text.length <= 2) {
+      errors.add('El nombre debe tener al menos 3 letras de longitud');
+    }
+
+    if (_descripcionController.text.length <= 25) {
+      errors.add('La descripcion debe tener al menos 25 letras de longitud');
+    }
+
+    if (_colorController.text.isEmpty) {
+      errors.add('El campo color no puede estar vacío');
+    }
+
+    if (_tallaController.text.isEmpty) {
+      errors.add('El campo talla no puede estar vacío');
+    }
+
+    if (_marcaController.text.isEmpty) {
+      errors.add('El campo marca no puede estar vacío');
+    }
+
+    if (int.parse(_cantidadController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como cantidad');
+    }
+    if (double.parse(_precioController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como precio');
+    }
+
+    if (int.parse(_descuentoController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como descuento');
+    }
+
+    if (_categoriaController.text.isEmpty) {
+      errors.add('El campo categoria no puede estar vacío');
+    }
+
+
+    if (_imageUrl.isEmpty) {
+      errors.add('No puedes publicar un producto sin imagen');
+    }
+
+    return errors;
+  }
+
+  void _ModificarProducto() async {
     if (_formKey.currentState!.validate()) {
       // Puedes manejar los datos del producto aquí
       String nombre = _nombreController.text;
@@ -32,19 +111,50 @@ class _ModificarProductoState extends State<ModificarProducto> {
       String marca = _marcaController.text;
       int cantidad = int.parse(_cantidadController.text);
       double precio = double.parse(_precioController.text);
-      double descuento = double.parse(_descuentoController.text);
+      int descuento = int.parse(_descuentoController.text);
+      String categoria = _categoriaController.text;
+
+      // se carga la imagen en firebase storage y se obtiene el link
+      //if(!(imagen_to_upload == null))
+      //{
+     //   Upload up = Upload();
+     //   final uploaded = await up.uploadImage(imagen_to_upload!);
+
+      //  _imageUrl = up.getUrl();
+     // }
+
+      List erros = checkData();
+      if(erros.isNotEmpty) {
+        for (var error in erros) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$error')),
+          );
+        }
+          return;
+      }
+      ProductController productController = ProductController();
+      productController.update(this.id, ProductTDO(nombre: nombre,
+          descripcion: descripcion,
+          color: color,
+          talla: talla,
+          marca: marca,
+          img: _imageUrl,
+          cantidad: cantidad,
+          precio: precio,
+          descuento: descuento,
+          categoria: categoria));
       // También puedes manejar la imagen (_imageUrl) como necesites
       // Por ejemplo, subirla a un servidor o guardar la URL en la base de datos
 
       // Luego de manejar los datos, puedes reiniciar el formulario
-      _formKey.currentState!.reset();
+      //_formKey.currentState!.reset();
       setState(() {
-        _imageUrl = ''; // Reinicia la imagen después de agregar el producto
+        _imageUrl = _imageUrl; // Reinicia la imagen después de agregar el producto
       });
 
       // Muestra un mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Producto agregado: $nombre')),
+        const SnackBar(content: Text('Se han guardado los cambios')),
       );
     }
   }
@@ -70,8 +180,8 @@ class _ModificarProductoState extends State<ModificarProducto> {
               height: 80.0,
               width: 80.0,
             ),
-            SizedBox(width: 8.0),
-            Text('Modificar Producto'),
+            const SizedBox(width: 8.0),
+            const Text('Modificar Producto'),
           ],
         ),
       ),
@@ -83,7 +193,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
             children: <Widget>[
               TextFormField(
                 controller: _nombreController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nombre',
                   icon: Icon(Icons.shopping_bag),
                 ),
@@ -96,7 +206,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _descripcionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Descripción',
                   icon: Icon(Icons.description),
                 ),
@@ -109,7 +219,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _colorController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Color',
                   icon: Icon(Icons.color_lens),
                 ),
@@ -122,7 +232,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _tallaController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Talla',
                   icon: Icon(Icons.format_size),
                 ),
@@ -135,7 +245,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _marcaController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Marca',
                   icon: Icon(Icons.branding_watermark),
                 ),
@@ -148,7 +258,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _cantidadController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Cantidad',
                   icon: Icon(Icons.add_shopping_cart),
                 ),
@@ -162,7 +272,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _precioController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Precio',
                   icon: Icon(Icons.attach_money),
                 ),
@@ -176,7 +286,7 @@ class _ModificarProductoState extends State<ModificarProducto> {
               ),
               TextFormField(
                 controller: _descuentoController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Descuento',
                   icon: Icon(Icons.money_off),
                 ),
@@ -188,38 +298,64 @@ class _ModificarProductoState extends State<ModificarProducto> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _categoriaController,
+                decoration: const InputDecoration(
+                  labelText: 'Categoría',
+                  icon: Icon(Icons.category),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa la categoría';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _ModificarProducto,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink, // Cambia el color del botón a rosado
                 ),
-                child: Text('Agregar Producto',
+                child: const Text('Guardar Cambios',
                 style: TextStyle(
                   color: Colors.black
                 ),),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               _imageUrl.isEmpty
-                  ? Text('No se ha seleccionado una imagen.')
+                  ? const Text('No se ha seleccionado una imagen.')
                   : Image.network(
                 _imageUrl,
                 height: 200,
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Aquí puedes implementar la lógica para seleccionar y cargar la imagen
                   // Puedes usar plugins como image_picker para esto
                   // En este ejemplo, simplemente mostramos un mensaje de ejemplo
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Selecciona una imagen')),
-                  );
+                  final imagen = await getImage();
+                  setState(()  {
+                    imagen_to_upload = File(imagen!.path);
+                  });
+
+                  Upload up = Upload();
+                  await up.uploadImage(imagen_to_upload!);
+
+                  setState(() {
+                    _imageUrl = up.getUrl();
+                  });
+
+
+                  //ScaffoldMessenger.of(context).showSnackBar(
+                    //SnackBar(content: Text('Selecciona una imagen')),
+                  //);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink, // Cambia el color del botón a rosado
                 ),
-                child: Text('Seleccionar Imagen',
+                child: const Text('Seleccionar Imagen',
                 style: TextStyle(
                   color: Colors.black,
                 ),),

@@ -39,9 +39,7 @@ class _HomePageState extends State<HomePage>{
                 //setState(() {
                 //  imagen_to_upload = File(imagen!.path);
                 //});
-                print('asdf');
 
-                ProductController productController = new ProductController();
                 
               }, child: Text("Seleccionar imagen")),
           ElevatedButton(

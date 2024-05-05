@@ -177,7 +177,7 @@ class ProductListAM extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ModificarProducto()));
+                                                    ModificarProducto(id: '')));
                                       },
                                       child: ContainerIconButtonModel(
                                         icon: CupertinoIcons.settings,

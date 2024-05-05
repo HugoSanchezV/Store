@@ -52,7 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Por favor, ingresa tu domicilio';
+                                return 'Por favor, ingresa tu correo';
+                              }else{
+
                               }
                               return null;
                             },

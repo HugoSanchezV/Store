@@ -25,7 +25,9 @@ class ProductTDO {
       'img':img,
       'cantidad':cantidad,
       'precio': precio,
-      'descuento':descuento
+      'descuento':descuento,
+      'categoria':categoria,
+
     };
   }
 }
