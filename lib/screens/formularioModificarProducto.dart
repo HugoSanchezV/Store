@@ -1,14 +1,9 @@
-import 'dart:ffi';
 import 'package:store/controllers/productController.dart';
-import 'package:store/screens/formularioProducto.dart';
-import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../services/select_image.dart';
 import '../services/upload_image.dart';
 import '../tdo/productTDO.dart';
-import 'login_screen.dart';
-import 'orders_list_screen.dart';
 
 class ModificarProducto extends StatefulWidget {
   final String id;

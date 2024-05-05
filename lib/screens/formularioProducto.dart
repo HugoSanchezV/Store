@@ -1,6 +1,10 @@
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:store/tdo/productTDO.dart';
+import 'dart:io';
+import '../services/select_image.dart';
+import '../services/upload_image.dart';
 import 'login_screen.dart';
 import 'orders_list_screen.dart';
 
@@ -19,7 +23,9 @@ class _AgregarProductoState extends State<AgregarProducto> {
   TextEditingController _cantidadController = TextEditingController();
   TextEditingController _precioController = TextEditingController();
   TextEditingController _descuentoController = TextEditingController();
+  TextEditingController _categoriaController = TextEditingController();
   String _imageUrl = '';
+  File? imagen_to_upload;
 
   void _agregarProducto() {
     if (_formKey.currentState!.validate()) {
@@ -31,14 +37,46 @@ class _AgregarProductoState extends State<AgregarProducto> {
       String marca = _marcaController.text;
       int cantidad = int.parse(_cantidadController.text);
       double precio = double.parse(_precioController.text);
-      double descuento = double.parse(_descuentoController.text);
+      int descuento = int.parse(_descuentoController.text);
+      String categoria = _categoriaController.text;
+      String img = _imageUrl;
       // También puedes manejar la imagen (_imageUrl) como necesites
       // Por ejemplo, subirla a un servidor o guardar la URL en la base de datos
+      List errors = checkData();
+      if(errors.isNotEmpty) {
+        for (var error in errors) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$error')),
+          );
+        }
+        return;
+      }
 
+      ProductController productController = ProductController();
+      productController.create(ProductTDO(
+          nombre: nombre,
+          descripcion: descripcion,
+          color: color,
+          talla: talla,
+          marca: marca,
+          img: img,
+          cantidad: cantidad,
+          precio: precio,
+          descuento: descuento,
+          categoria: categoria));
       // Luego de manejar los datos, puedes reiniciar el formulario
-      _formKey.currentState!.reset();
+
       setState(() {
         _imageUrl = ''; // Reinicia la imagen después de agregar el producto
+        _nombreController.text = '';
+        _descripcionController.text = '';
+        _colorController.text = '';
+        _tallaController.text = '';
+        _marcaController.text = '';
+        _cantidadController.text = '';
+        _precioController.text = '';
+        _descuentoController.text = '';
+        _categoriaController.text ='';
       });
 
       // Muestra un mensaje de éxito
@@ -46,6 +84,51 @@ class _AgregarProductoState extends State<AgregarProducto> {
         SnackBar(content: Text('Producto agregado: $nombre')),
       );
     }
+  }
+
+  List checkData() {
+    List errors = [];
+    if (_nombreController.text.length <= 2) {
+      errors.add('El nombre debe tener al menos 3 letras de longitud');
+    }
+
+    if (_descripcionController.text.length <= 25) {
+      errors.add('La descripcion debe tener al menos 25 letras de longitud');
+    }
+
+    if (_colorController.text.isEmpty) {
+      errors.add('El campo color no puede estar vacío');
+    }
+
+    if (_tallaController.text.isEmpty) {
+      errors.add('El campo talla no puede estar vacío');
+    }
+
+    if (_marcaController.text.isEmpty) {
+      errors.add('El campo marca no puede estar vacío');
+    }
+
+    if (int.parse(_cantidadController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como cantidad');
+    }
+    if (double.parse(_precioController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como precio');
+    }
+
+    if (int.parse(_descuentoController.text.toString()) < 0) {
+      errors.add('No puedes escribir numeros negativos como descuento');
+    }
+
+    if (_categoriaController.text.isEmpty) {
+      errors.add('El campo categoria no puede estar vacío');
+    }
+
+
+    if (_imageUrl.isEmpty) {
+      errors.add('No puedes publicar un producto sin imagen');
+    }
+
+    return errors;
   }
 
   @override
@@ -235,6 +318,19 @@ class _AgregarProductoState extends State<AgregarProducto> {
                   return null;
                 },
               ),
+              TextFormField(
+                controller: _categoriaController,
+                decoration: const InputDecoration(
+                  labelText: 'Categoría',
+                  icon: Icon(Icons.category),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa la categoría';
+                  }
+                  return null;
+                },
+              ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _agregarProducto,
@@ -255,13 +351,25 @@ class _AgregarProductoState extends State<AgregarProducto> {
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Aquí puedes implementar la lógica para seleccionar y cargar la imagen
                   // Puedes usar plugins como image_picker para esto
                   // En este ejemplo, simplemente mostramos un mensaje de ejemplo
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Selecciona una imagen')),
-                  );
+                  final imagen = await getImage();
+                  setState(()  {
+                    imagen_to_upload = File(imagen!.path);
+                  });
+
+                  Upload up = Upload();
+                  await up.uploadImage(imagen_to_upload!);
+
+                  setState(() {
+                    _imageUrl = up.getUrl();
+                  });
+
+                 // ScaffoldMessenger.of(context).showSnackBar(
+                   // SnackBar(content: Text('Selecciona una imagen')),
+                  //);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink, // Cambia el color del botón a rosado

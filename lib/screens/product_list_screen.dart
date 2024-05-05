@@ -1,11 +1,8 @@
 import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
-import 'package:store/widgets/confirmation_purchase_popup.dart';
-import 'package:store/widgets/container_button_motel.dart';
 import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../widgets/delete_product_popup.dart';
 import 'formularioProducto.dart';
 import 'login_screen.dart';
@@ -16,59 +13,12 @@ class ProductListAM extends StatefulWidget {
   _ProductListAMState createState() => _ProductListAMState();
 }
 
-class _ProductListAMState extends State<ProductListAM>  {
-  List imagesList = [
-  ];
-
-  List productTitles = [
-  ];
-
-  List prices = [
-  ];
-
-  List ids = [
-  ];
-
-  List descriptions = [
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    ProductController productController =  ProductController();
-
-    productController.getAll().then((products) {
-      for (var productData in products) {
-        String id = productData.keys.first;
-        Map<String, dynamic> productDetails = productData[id];
-        ids.add(id);
-        productDetails.forEach((key, value) {
-          if (key == "img") {
-            imagesList.add(value);
-          }
-          if (key == "nombre") {
-            productTitles.add(value);
-          }
-          if (key == "precio") {
-            prices.add("\$" + value.toString());
-          }
-
-          if (key == "descripcion") {
-            descriptions.add(value.toString().substring(0, 17) + "...");
-          }
-        });
-      }
-    });
-  }
-
-
-
-
+class _ProductListAMState extends State<ProductListAM> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de productos"),
+        title: const Text("Lista de productos"),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -149,15 +99,27 @@ class _ProductListAMState extends State<ProductListAM>  {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Container(
-                      child: ListView.builder(
-                        itemCount: imagesList.length,
+                child: FutureBuilder<List<dynamic>>(
+                  future: ProductController().getAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // Data is ready, display the list
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+                          // Access and use product data from the snapshot
+                          String id = snapshot.data![index].keys.first;
+                          Map<String, dynamic> productDetails =
+                          snapshot.data![index][id];
+                          String imageUrl = productDetails["img"];
+                          String title = productDetails["nombre"];
+                          String description =
+                              productDetails["descripcion"].toString().substring(0, 17) + "...";
+                          String price = "\$" + productDetails["precio"].toString();
+
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 15),
                             child: Row(
@@ -166,7 +128,7 @@ class _ProductListAMState extends State<ProductListAM>  {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
-                                    imagesList[index],
+                                    imageUrl,
                                     height: 85,
                                     width: 80,
                                     fit: BoxFit.cover,
@@ -178,7 +140,7 @@ class _ProductListAMState extends State<ProductListAM>  {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      productTitles[index],
+                                      title,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w900,
@@ -187,7 +149,7 @@ class _ProductListAMState extends State<ProductListAM>  {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      descriptions[index],
+                                      description,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
@@ -195,7 +157,7 @@ class _ProductListAMState extends State<ProductListAM>  {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      prices[index],
+                                      price,
                                       style: const TextStyle(
                                         color: Colors.pink,
                                         fontSize: 18,
@@ -213,7 +175,7 @@ class _ProductListAMState extends State<ProductListAM>  {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ModificarProducto(id: ids[index])));
+                                                    ModificarProducto(id: id)));
                                       },
                                       child: const ContainerIconButtonModel(
                                         icon: CupertinoIcons.settings,
@@ -230,9 +192,15 @@ class _ProductListAMState extends State<ProductListAM>  {
                             ),
                           );
                         },
-                      ),
-                    ),
-                  ],
+                      );
+                    } else if (snapshot.hasError) {
+                      // Handle error
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      // Show loading indicator while data is being fetched
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
               ),
             ),
