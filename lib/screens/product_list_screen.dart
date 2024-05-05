@@ -29,6 +29,9 @@ class _ProductListAMState extends State<ProductListAM>  {
   List ids = [
   ];
 
+  List descriptions = [
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +51,10 @@ class _ProductListAMState extends State<ProductListAM>  {
           }
           if (key == "precio") {
             prices.add("\$" + value.toString());
+          }
+
+          if (key == "descripcion") {
+            descriptions.add(value.toString().substring(0, 17) + "...");
           }
         });
       }
@@ -179,9 +186,9 @@ class _ProductListAMState extends State<ProductListAM>  {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    const Text(
-                                      "Lorem ipsum dolor",
-                                      style: TextStyle(
+                                    Text(
+                                      descriptions[index],
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
