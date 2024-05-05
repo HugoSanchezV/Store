@@ -1,3 +1,4 @@
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
 import 'package:store/widgets/confirmation_purchase_popup.dart';
 import 'package:store/widgets/container_button_motel.dart';
@@ -10,24 +11,51 @@ import 'formularioProducto.dart';
 import 'login_screen.dart';
 import 'orders_list_screen.dart';
 
-class ProductListAM extends StatelessWidget {
+class ProductListAM extends StatefulWidget {
+  @override
+  _ProductListAMState createState() => _ProductListAMState();
+}
+
+class _ProductListAMState extends State<ProductListAM>  {
   List imagesList = [
-    "images/image2.jpg",
-    "images/image2.jpg",
-    "images/image2.jpg",
   ];
 
   List productTitles = [
-    "Producto 1",
-    "Producto 2",
-    "Producto 3",
   ];
 
   List prices = [
-    "\$999",
-    "\$999",
-    "\$999",
   ];
+
+  List ids = [
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    ProductController productController =  ProductController();
+
+    productController.getAll().then((products) {
+      for (var productData in products) {
+        String id = productData.keys.first;
+        Map<String, dynamic> productDetails = productData[id];
+        ids.add(id);
+        productDetails.forEach((key, value) {
+          if (key == "img") {
+            imagesList.add(value);
+          }
+          if (key == "nombre") {
+            productTitles.add(value);
+          }
+          if (key == "precio") {
+            prices.add("\$" + value.toString());
+          }
+        });
+      }
+    });
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +71,7 @@ class ProductListAM extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.pink,
               ),
@@ -57,7 +85,7 @@ class ProductListAM extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.shopping_bag),
-              title: Text('Lista de Productos'),
+              title: const Text('Lista de Productos'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProductListAM()));
@@ -65,29 +93,29 @@ class ProductListAM extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.add),
-              title: Text('Agregar Producto'),
+              title: const Text('Agregar Producto'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AgregarProducto()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text('Notificaciones'),
+              leading: const Icon(Icons.notifications),
+              title: const Text('Notificaciones'),
               onTap: () {
               },
             ),
             ListTile(
-              leading: Icon(Icons.assignment),
-              title: Text('Pedidos'),
+              leading: const Icon(Icons.assignment),
+              title: const Text('Pedidos'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OrderList()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.no_accounts),
-              title: Text('Cerrar sesion'),
+              leading: const Icon(Icons.no_accounts),
+              title: const Text('Cerrar sesion'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -99,11 +127,11 @@ class ProductListAM extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar productos...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -113,7 +141,7 @@ class ProductListAM extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
                     Container(
@@ -130,37 +158,38 @@ class ProductListAM extends StatelessWidget {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
+                                  child: Image.network(
                                     imagesList[index],
-                                    height: 90,
-                                    width: 90,
+                                    height: 85,
+                                    width: 80,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
+                                SizedBox(width: 10),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       productTitles[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w900,
                                         fontSize: 18,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
+                                    const SizedBox(height: 10),
+                                    const Text(
                                       "Lorem ipsum dolor",
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(
                                       prices[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.pink,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w900,
@@ -177,16 +206,16 @@ class ProductListAM extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ModificarProducto(id: '')));
+                                                    ModificarProducto(id: ids[index])));
                                       },
-                                      child: ContainerIconButtonModel(
+                                      child: const ContainerIconButtonModel(
                                         icon: CupertinoIcons.settings,
                                         iconColor: Colors.grey,
                                         iconSize: 20,
                                         containerWidth: 50,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     DeleteProductPopUp(),
                                   ],
                                 ),
