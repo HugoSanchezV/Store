@@ -1,39 +1,24 @@
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
-import 'package:store/widgets/confirmation_purchase_popup.dart';
-import 'package:store/widgets/container_button_motel.dart';
 import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../widgets/delete_product_popup.dart';
 import 'formularioProducto.dart';
 import 'login_screen.dart';
 import 'orders_list_screen.dart';
 
-class ProductListAM extends StatelessWidget {
-  List imagesList = [
-    "images/image2.jpg",
-    "images/image2.jpg",
-    "images/image2.jpg",
-  ];
+class ProductListAM extends StatefulWidget {
+  @override
+  _ProductListAMState createState() => _ProductListAMState();
+}
 
-  List productTitles = [
-    "Producto 1",
-    "Producto 2",
-    "Producto 3",
-  ];
-
-  List prices = [
-    "\$999",
-    "\$999",
-    "\$999",
-  ];
-
+class _ProductListAMState extends State<ProductListAM> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de productos"),
+        title: const Text("Lista de productos"),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -43,7 +28,7 @@ class ProductListAM extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.pink,
               ),
@@ -57,7 +42,7 @@ class ProductListAM extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.shopping_bag),
-              title: Text('Lista de Productos'),
+              title: const Text('Lista de Productos'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProductListAM()));
@@ -65,29 +50,29 @@ class ProductListAM extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.add),
-              title: Text('Agregar Producto'),
+              title: const Text('Agregar Producto'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AgregarProducto()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text('Notificaciones'),
+              leading: const Icon(Icons.notifications),
+              title: const Text('Notificaciones'),
               onTap: () {
               },
             ),
             ListTile(
-              leading: Icon(Icons.assignment),
-              title: Text('Pedidos'),
+              leading: const Icon(Icons.assignment),
+              title: const Text('Pedidos'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OrderList()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.no_accounts),
-              title: Text('Cerrar sesion'),
+              leading: const Icon(Icons.no_accounts),
+              title: const Text('Cerrar sesion'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -99,11 +84,11 @@ class ProductListAM extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar productos...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -113,16 +98,28 @@ class ProductListAM extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Container(
-                      child: ListView.builder(
-                        itemCount: imagesList.length,
+                padding: const EdgeInsets.all(15),
+                child: FutureBuilder<List<dynamic>>(
+                  future: ProductController().getAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // Data is ready, display the list
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+                          // Access and use product data from the snapshot
+                          String id = snapshot.data![index].keys.first;
+                          Map<String, dynamic> productDetails =
+                          snapshot.data![index][id];
+                          String imageUrl = productDetails["img"];
+                          String title = productDetails["nombre"];
+                          String description =
+                              productDetails["descripcion"].toString().substring(0, 17) + "...";
+                          String price = "\$" + productDetails["precio"].toString();
+
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 15),
                             child: Row(
@@ -130,37 +127,38 @@ class ProductListAM extends StatelessWidget {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
-                                    imagesList[index],
-                                    height: 90,
-                                    width: 90,
+                                  child: Image.network(
+                                    imageUrl,
+                                    height: 85,
+                                    width: 80,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
+                                SizedBox(width: 10),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      productTitles[index],
-                                      style: TextStyle(
+                                      title,
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w900,
                                         fontSize: 18,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(
-                                      "Lorem ipsum dolor",
-                                      style: TextStyle(
+                                      description,
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(
-                                      prices[index],
-                                      style: TextStyle(
+                                      price,
+                                      style: const TextStyle(
                                         color: Colors.pink,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w900,
@@ -177,16 +175,16 @@ class ProductListAM extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ModificarProducto(id: '')));
+                                                    ModificarProducto(id: id)));
                                       },
-                                      child: ContainerIconButtonModel(
+                                      child: const ContainerIconButtonModel(
                                         icon: CupertinoIcons.settings,
                                         iconColor: Colors.grey,
                                         iconSize: 20,
                                         containerWidth: 50,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     DeleteProductPopUp(),
                                   ],
                                 ),
@@ -194,9 +192,15 @@ class ProductListAM extends StatelessWidget {
                             ),
                           );
                         },
-                      ),
-                    ),
-                  ],
+                      );
+                    } else if (snapshot.hasError) {
+                      // Handle error
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      // Show loading indicator while data is being fetched
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
               ),
             ),

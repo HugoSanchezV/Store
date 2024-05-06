@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:store/controllers/productController.dart';
 import 'package:store/controllers/userController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
+import 'package:store/screens/product_list_screen.dart';
 import 'package:store/tdo/productTDO.dart';
 
 
@@ -20,7 +21,7 @@ import 'package:store/tdo/productTDO.dart';
     Widget build(BuildContext context) {
       return MaterialApp(
         title: 'My App',
-        home: ModificarProducto(id: 'TB64TS8KIPyiIxEmOuJC'),
+        home: ProductListAM(),
       );
     }
   }
