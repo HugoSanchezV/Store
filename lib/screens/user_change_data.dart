@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/screens/user_change_data.dart';
 
 class UserChangeData extends StatefulWidget {
   final String nombre;
-  final String apellidoPaterno;
-  final String apellidoMaterno;
-  final String edad;
   final String telefono;
   final String direccion;
   final String segundaDireccion;
@@ -14,9 +12,6 @@ class UserChangeData extends StatefulWidget {
   const UserChangeData({
     Key? key,
     required this.nombre,
-    required this.apellidoPaterno,
-    required this.apellidoMaterno,
-    required this.edad,
     required this.telefono,
     required this.direccion,
     required this.segundaDireccion,
@@ -29,6 +24,18 @@ class UserChangeData extends StatefulWidget {
 
 class _UserChangeDataState extends State<UserChangeData> {
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserEmail();
+  }
+
+  void _getUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userEmail = prefs.getString('userEmail') ?? '';
+    print('Correo electrónico del usuario: $userEmail');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,51 +77,6 @@ class _UserChangeDataState extends State<UserChangeData> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu nombre';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Ingresar apellido paterno",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        initialValue: widget.apellidoPaterno,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, ingresa tu apellido paterno';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Ingresar apellido materno",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        initialValue: widget.apellidoMaterno,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, ingresa tu apellido materno';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Ingresar Edad",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        initialValue: widget.edad,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, ingresa tu Edad';
                           }
                           return null;
                         },
@@ -189,26 +151,6 @@ class _UserChangeDataState extends State<UserChangeData> {
                         },
                         child: Text(
                           "Editar datos",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size.fromHeight(55),
-                          backgroundColor: Colors.pink,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Implementar lógica para cambiar la imagen
-                        },
-                        child: Text(
-                          "Cambiar imagen",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,

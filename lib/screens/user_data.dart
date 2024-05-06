@@ -1,15 +1,62 @@
-import 'package:flutter/material.dart';
-import 'package:store/screens/user_change_data.dart';
+import 'dart:convert';
 
-class UserDataScreen extends StatelessWidget {
-  final String nombre = 'Juan';
-  final String apellidoPaterno = 'Pérez';
-  final String apellidoMaterno = 'García';
-  final String edad = '30';
-  final String telefono = '555-123-4567';
-  final String direccion = 'Calle Principal 123';
-  final String segundaDireccion = '(No especificada)';
-  final String tipoPago = 'Tarjeta de crédito';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:store/screens/user_change_data.dart';
+import 'package:store/controllers/userController.dart';
+
+class UserDataScreen extends StatefulWidget {
+  @override
+  _UserDataScreenState createState() => _UserDataScreenState();
+}
+
+class _UserDataScreenState extends State<UserDataScreen> {
+  String nombre = '';
+  String correo = '';
+  String telefono = '';
+  String direccion = '';
+  String segundaDireccion = '';
+  String tipoPago = '';
+  String userEmail = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserEmail();
+    _getUserData();
+  }
+
+  void _getUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    userEmail = prefs.getString('userEmail') ?? '';
+    print('Correo electrónico del usuario: $userEmail');
+  }
+
+  void _getUserData() async {
+    UserController userController = UserController();
+    Map<String, dynamic> userCurrent;
+
+    userController.getAll().then((user) {
+      for (var usersData in user) {
+        String id = usersData.keys.first;
+        Map<String, dynamic> userDetails = usersData[id];
+        userDetails.forEach((key, value) {
+          if (key == "email") {
+            if (value == userEmail) {
+              print("Coincide");
+              userCurrent = userDetails;
+              setState(() {
+                nombre = userDetails['name'];
+                direccion = userDetails['address'];
+                telefono = userDetails['phone'];
+                correo = userDetails['email'];
+              });
+            }
+          }
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +83,7 @@ class UserDataScreen extends StatelessWidget {
             SizedBox(height: 15),
             Text('Nombre: $nombre'),
             SizedBox(height: 15),
-            Text('Apellido paterno: $apellidoPaterno'),
-            SizedBox(height: 15),
-            Text('Apellido materno: $apellidoMaterno'),
-            SizedBox(height: 15),
-            Text('Edad: $edad'),
+            Text('Correo: $correo'),
             SizedBox(height: 15),
             Text('Número de teléfono: $telefono'),
             SizedBox(height: 15),
@@ -55,16 +98,14 @@ class UserDataScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UserChangeData(
-                      nombre: nombre,
-                      apellidoPaterno: apellidoPaterno,
-                      apellidoMaterno: apellidoMaterno,
-                      edad: edad,
-                      telefono: telefono,
-                      direccion: direccion,
-                      segundaDireccion: segundaDireccion,
-                      tipoPago: tipoPago,
-                    ),
+                    builder: (context) =>
+                        UserChangeData(
+                          nombre: nombre,
+                          telefono: telefono,
+                          direccion: direccion,
+                          segundaDireccion: segundaDireccion,
+                          tipoPago: tipoPago,
+                        ),
                   ),
                 );
               },
