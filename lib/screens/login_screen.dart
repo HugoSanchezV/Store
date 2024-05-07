@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               }else if (!RegExp(r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(value)){
                                 return 'Introduce un correo valido';
                               }
-                              return 'Correo o contraseña no válido';
+
                             },
                             onChanged: (value) {
                               _correo = value;
@@ -79,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, ingresa tu contraseña';
                               }
-                              return 'Correo o contraseña no válido';
                             },
                             onChanged: (value) {
                               _contrasena = value;
