@@ -1,8 +1,9 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/screens/forgot_screen.dart';
 import 'package:store/screens/product_screen.dart';
 import 'package:store/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:store/controllers/loginController.dart';
 import '../Presentation/Screens/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
 
   String _correo = '';
   String _contrasena = '';
@@ -45,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           TextFormField(
+                            controller: _emailController,
                             decoration: InputDecoration(
                               labelText: "Ingresar correo",
                               border: OutlineInputBorder(),
@@ -53,16 +56,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, ingresa tu correo';
-                              }else{
-
+                              }else if (!RegExp(r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(value)){
+                                return 'Introduce un correo valido';
                               }
-                              return null;
+                              return 'Correo o contraseña no válido';
                             },
-                            onSaved: (value) {
-                              _correo = value!;
+                            onChanged: (value) {
+                              _correo = value;
                             },
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           TextFormField(
                             obscureText: true,
                             decoration: InputDecoration(
@@ -71,14 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               prefixIcon: Icon(Icons.lock),
                               suffixIcon: Icon(Icons.remove_red_eye),
                             ),
+
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Por favor, ingresa tu domicilio';
+                                return 'Por favor, ingresa tu contraseña';
                               }
-                              return null;
+                              return 'Correo o contraseña no válido';
                             },
-                            onSaved: (value) {
-                              _contrasena = value!;
+                            onChanged: (value) {
+                              _contrasena = value;
                             },
                           ),
                           Align(
@@ -102,17 +106,28 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 25),
                           ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => principalCliente(),
-                                  ));
+                            onPressed: () async {
+                              if(_formKey.currentState!.validate()){
+                                loginController login = new loginController();
+
+                                //Verifica la exitencia del correo y de la contraseña, y el match entre ellos
+                                if(await login.CredentialVerification(_correo, _contrasena)){
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setString('userEmail', _emailController.text);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => principalCliente(),
+                                      ));
+                                }
+                              }
+
+
                             },
                             child: Text(
                               "Acceder",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.black,
                                 fontSize: 18,
                               ),
                             ),
