@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PedidosPage extends StatelessWidget {
+  String id;
+  PedidosPage({required this.id});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

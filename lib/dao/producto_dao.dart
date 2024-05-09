@@ -79,7 +79,6 @@ class ProductDao implements ApiCrud<ProductTDO>{
 
 
     }
-
     return products;
   }
 

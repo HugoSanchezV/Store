@@ -1,32 +1,16 @@
+import 'dart:ffi';
+
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/product_list_screen.dart';
-import 'package:store/widgets/confirmation_purchase_popup.dart';
-import 'package:store/widgets/container_button_motel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../controllers/recordController.dart';
 import 'formularioProducto.dart';
 import 'login_screen.dart';
 import 'order_screen.dart';
 
 class OrderList extends StatelessWidget {
-  List imagesList = [
-    "images/image2.jpg",
-    "images/image2.jpg",
-    "images/image2.jpg",
-  ];
-
-  List productTitles = [
-    "Pedido 1",
-    "Pedido 2",
-    "Pedido 3",
-  ];
-
-  List state = [
-    "\Estado",
-    "\Estado",
-    "\Estado",
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +54,7 @@ class OrderList extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.notifications),
               title: Text('Notificaciones'),
-              onTap: () {
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: Icon(Icons.assignment),
@@ -110,75 +93,111 @@ class OrderList extends StatelessWidget {
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Container(
-                      child: ListView.builder(
-                        itemCount: imagesList.length,
+                child: FutureBuilder<List>(
+                  future: RecordController().getAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // Data is ready, display the list
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => PedidosPage()));
-                            },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset(
-                                    imagesList[index],
-                                    height: 90,
-                                    width: 90,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                SizedBox(width: 20),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      productTitles[index],
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      "Lorem ipsum dolor",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      state[index],
-                                      style: TextStyle(
-                                        color: Colors.pink,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 1),
-                              ],
-                            ),
-                          ),
-                          );
+                          // Access and use product data from the snapshot
+                          String id = snapshot.data![index].keys.first;
+
+                          Map<String, dynamic> recordDetails = snapshot.data![index][id];
+
+                          String imagen = 'images/image2.jpg';
+                          String titulo = recordDetails['idProducto'];
+                          String idProducto = recordDetails['idProducto'];
+                          String  estado = recordDetails['estado'];
+                          String  descripcion = '';
+
+                         return FutureBuilder<List>(
+                             future: ProductController().getById(idProducto),
+                             builder: (context, productSnapshot){
+
+                               List<dynamic>? product = productSnapshot.data;
+
+                               product?.forEach((element) {
+                                 titulo = element['nombre'];
+                                 imagen = element['img'];
+                                 descripcion = "${element['descripcion']
+                                     .toString()
+                                     .substring(0,17)}...";
+                               });
+
+
+                               return InkWell(
+                                 onTap: () {
+                                   Navigator.push(context,
+                                       MaterialPageRoute(builder: (context) => PedidosPage(id: id)));
+                                 },
+                                 child: Container(
+                                   margin: EdgeInsets.symmetric(vertical: 15),
+                                   child: Row(
+                                     mainAxisAlignment: MainAxisAlignment.start,
+                                     children: [
+                                       ClipRRect(
+                                         borderRadius: BorderRadius.circular(10),
+                                         child: Image.network(
+                                           imagen,
+                                           height: 90,
+                                           width: 90,
+                                           fit: BoxFit.cover,
+                                         ),
+                                       ),
+                                       SizedBox(width: 20),
+                                       Column(
+                                         mainAxisAlignment: MainAxisAlignment.end,
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                         children: [
+                                           Text(
+                                             titulo,
+                                             style: TextStyle(
+                                               color: Colors.black,
+                                               fontWeight: FontWeight.w900,
+                                               fontSize: 18,
+                                             ),
+                                           ),
+                                           SizedBox(height: 10),
+                                           Text(
+                                             descripcion,
+                                             style: TextStyle(
+                                               color: Colors.black,
+                                               fontSize: 16,
+                                             ),
+                                           ),
+                                           SizedBox(height: 10),
+                                           Text(
+                                             estado,
+                                             style: TextStyle(
+                                               color: Colors.pink,
+                                               fontSize: 18,
+                                               fontWeight: FontWeight.w900,
+                                             ),
+                                           ),
+                                         ],
+                                       ),
+                                       SizedBox(width: 1),
+                                     ],
+                                   ),
+                                 ),
+                               );
+                             }
+                         );
                         },
-                      ),
-                    ),
-                  ],
+                      );
+                    } else if (snapshot.hasError) {
+                      // Handle error
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      // Show loading indicator while data is being fetched
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
               ),
             ),
