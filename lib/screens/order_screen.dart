@@ -1,34 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:store/screens/menu.dart';
 
-class PedidoScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pedidos',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: PedidosPage(),
-    );
-  }
-}
-
-class PedidosPage extends StatefulWidget {
-  @override
-  _PedidosPageState createState() => _PedidosPageState();
-}
-
-class _PedidosPageState extends State<PedidosPage> {
-  List<PedidoItem> pedidos = [
-    PedidoItem(
-      nombre: 'Producto 1',
-      imagenUrl: 'images/producto.png',
-      precio: 50,
-      cantidad: 2,
-    ),
-  ];
-
+class PedidosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,36 +9,21 @@ class _PedidosPageState extends State<PedidosPage> {
       ),
       body: ListView(
         children: <Widget>[
-          Column(
-            children: pedidos,
+          PedidoItem(
+            nombre: 'Producto 1',
+            imagenUrl: 'images/producto.png',
+            precio: 50,
+            cantidad: 2,
           ),
           SizedBox(height: 20),
-          EstadoEnvioWidget(
-            estadoEnvio: 'En camino',
-            direccionEntrega: 'Calle Principal 123',
-            fechaEstimadaEntrega: '25 de Abril de 2024',
-          ),
+          EstadoEnvioWidget(),
           SizedBox(height: 20),
           TotalWidget(
             subtotal: 100,
             costoEnvio: 10,
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                pedidos.add(
-                  PedidoItem(
-                    nombre: 'Nuevo Producto',
-                    imagenUrl: 'images/nuevo_producto.png', // Ruta de la imagen del nuevo producto
-                    precio: 30,
-                    cantidad: 1,
-                  ),
-                );
-              });
-            },
-            child: Text('Agregar otro producto'),
-          ),
+          ConfirmarEstadoButton(),
         ],
       ),
     );
@@ -102,17 +59,13 @@ class PedidoItem extends StatelessWidget {
   }
 }
 
-class EstadoEnvioWidget extends StatelessWidget {
-  final String estadoEnvio;
-  final String direccionEntrega;
-  final String fechaEstimadaEntrega;
+class EstadoEnvioWidget extends StatefulWidget {
+  @override
+  _EstadoEnvioWidgetState createState() => _EstadoEnvioWidgetState();
+}
 
-  const EstadoEnvioWidget({
-    Key? key,
-    required this.estadoEnvio,
-    required this.direccionEntrega,
-    required this.fechaEstimadaEntrega,
-  }) : super(key: key);
+class _EstadoEnvioWidgetState extends State<EstadoEnvioWidget> {
+  String selectedState = 'En camino'; // Estado de envío inicial
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +76,29 @@ class EstadoEnvioWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Estado del Envío: $estadoEnvio',
+            'Estado del Envío:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Text('Dirección de Entrega: $direccionEntrega'),
-          SizedBox(height: 8),
-          Text('Fecha Estimada de Entrega: $fechaEstimadaEntrega'),
+          DropdownButton<String>(
+            value: selectedState,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedState = newValue!;
+              });
+            },
+            items: <String>[
+              'En camino',
+              'Entregado',
+              'Retrasado',
+              'En espera',
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
@@ -171,4 +140,39 @@ class TotalWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class ConfirmarEstadoButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: ElevatedButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Estado del envío confirmado'),
+              ),
+            );
+          },
+          child: Text(
+            "Guardar cambios",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size.fromHeight(55),
+            backgroundColor: Colors.pink,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 }

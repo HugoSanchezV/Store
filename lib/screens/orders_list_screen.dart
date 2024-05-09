@@ -1,5 +1,4 @@
 import 'package:store/screens/product_list_screen.dart';
-import 'package:store/screens/ventana_pedidio.dart';
 import 'package:store/widgets/confirmation_purchase_popup.dart';
 import 'package:store/widgets/container_button_motel.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'formularioProducto.dart';
 import 'login_screen.dart';
+import 'order_screen.dart';
 
 class OrderList extends StatelessWidget {
   List imagesList = [
@@ -122,7 +122,7 @@ class OrderList extends StatelessWidget {
                           return InkWell(
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => PedidoScreen()));
+                                  MaterialPageRoute(builder: (context) => PedidosPage()));
                             },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 15),
