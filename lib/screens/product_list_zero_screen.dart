@@ -8,12 +8,12 @@ import 'formularioProducto.dart';
 import 'login_screen.dart';
 import 'orders_list_screen.dart';
 
-class ProductListAM extends StatefulWidget {
+class ProductListZeroAM extends StatefulWidget {
   @override
   _ProductListAMState createState() => _ProductListAMState();
 }
 
-class _ProductListAMState extends State<ProductListAM> {
+class _ProductListAMState extends State<ProductListZeroAM> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +45,7 @@ class _ProductListAMState extends State<ProductListAM> {
               title: const Text('Lista de Productos'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductListAM()));
+                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
               },
             ),
             ListTile(

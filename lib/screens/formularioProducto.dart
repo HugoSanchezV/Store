@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:store/controllers/productController.dart';
 import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -189,6 +190,14 @@ class _AgregarProductoState extends State<AgregarProducto> {
             ListTile(
               leading: Icon(Icons.assignment),
               title: Text('Pedidos'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OrderList()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(CupertinoIcons.delete),
+              title: const Text('Sin Stock'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OrderList()));
