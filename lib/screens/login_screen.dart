@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _correo = '';
   String _contrasena = '';
+  bool _obscureTextTwo = true;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: "Ingresar contraseña",
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.lock),
-                              suffixIcon: Icon(Icons.remove_red_eye),
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureTextTwo
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureTextTwo = !_obscureTextTwo;
+                                  });
+                                },
+                              ),
                             ),
 
                             validator: (value) {
