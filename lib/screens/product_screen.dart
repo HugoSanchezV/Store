@@ -1,11 +1,60 @@
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
+import 'package:store/dao/producto_dao.dart';
+import 'dart:io';
+import '../controllers/productController.dart';
 import '../widgets/container_button_motel.dart';
 
-class ProductScreen extends StatelessWidget {
-   ProductScreen({super.key});
+
+class ProductScreen extends StatefulWidget {
+  final String id;
+  ProductScreen({required this.id});
+
+  @override
+  _ProductScreenState createState() => _ProductScreenState (id: this.id);
+}
+
+class _ProductScreenState extends State<ProductScreen> {
+  final String id;
+  _ProductScreenState({required this.id});
+
+   final ProductDao prod = new ProductDao();
+
+
+  String nombre = "";
+  String descripcion = "";
+  String color = "";
+  String talla = "";
+  String marca = "";
+  String cantidad = "";
+  String precio = "";
+  String descuento = "";
+  String categoria = "";
+  String _url = "";
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    ProductController productController = ProductController();
+    productController.getById(id).then((product) {
+      // Update UI with product data
+       nombre = product[0]['nombre'];
+       descripcion = product[0]['descripcion'];
+       color  = product[0]['color'];
+       talla = product[0]['talla'];
+       marca = product[0]['marca'];
+       cantidad = product[0]['cantidad'].toString();
+       precio = product[0]['precio'].toString();
+       descuento = product[0]['descuento'].toString();
+       categoria = product[0]['categoria'].toString();
+       _url = product[0]['img'];
+      // ... update other controllers similarly
+      setState(() {}); // Trigger UI rebuild
+    });
+  }
 
   List<String> images = [
     "images/image1.jpg",
@@ -13,6 +62,7 @@ class ProductScreen extends StatelessWidget {
     "images/image1.jpg",
     "images/image1.jpg"
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +98,7 @@ class ProductScreen extends StatelessWidget {
                       children: [
                         SizedBox(height: 30),
                         Text(
-                          "Texto generico",
+                           nombre,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w900,
@@ -66,7 +116,7 @@ class ProductScreen extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      "\$999.99",
+                      precio,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.pink,
@@ -97,7 +147,7 @@ class ProductScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child:  Text(
-                    "Creo que aqui ba la descripcion de la ropa. \nLorem ipsum dolor",
+                    descripcion,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,

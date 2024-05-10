@@ -262,7 +262,7 @@ class principalCliente extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ProductScreen()));
+                                      builder: (context) => ProductScreen(id: id)));
                             },
                             child: Container(
                               margin: EdgeInsets.all(10),
