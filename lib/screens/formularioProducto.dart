@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:store/controllers/productController.dart';
 import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:store/screens/product_list_zero_screen.dart';
 import 'package:store/tdo/productTDO.dart';
 import 'dart:io';
 import '../services/select_image.dart';
@@ -200,7 +201,7 @@ class _AgregarProductoState extends State<AgregarProducto> {
               title: const Text('Sin Stock'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderList()));
+                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
               },
             ),
             ListTile(

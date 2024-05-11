@@ -1,5 +1,6 @@
 import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
+import 'package:store/screens/product_list_screen.dart';
 import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +11,15 @@ import 'orders_list_screen.dart';
 
 class ProductListZeroAM extends StatefulWidget {
   @override
-  _ProductListAMState createState() => _ProductListAMState();
+  _ProductListAMZeroState createState() => _ProductListAMZeroState();
 }
 
-class _ProductListAMState extends State<ProductListZeroAM> {
+class _ProductListAMZeroState extends State<ProductListZeroAM> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Lista de productos"),
+        title: const Text("Productos sin Stock"),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -45,7 +46,7 @@ class _ProductListAMState extends State<ProductListZeroAM> {
               title: const Text('Lista de Productos'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
+                    MaterialPageRoute(builder: (context) => ProductListAM()));
               },
             ),
             ListTile(
@@ -75,7 +76,7 @@ class _ProductListAMState extends State<ProductListZeroAM> {
               title: const Text('Sin Stock'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderList()));
+                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
               },
             ),
             ListTile(
@@ -129,78 +130,78 @@ class _ProductListAMState extends State<ProductListZeroAM> {
                           String price = "\$${productDetails["precio"]}";
                           int cantidad = int.parse(productDetails["cantidad"].toString());
 
-                          if (cantidad > 0) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(vertical: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    imageUrl,
-                                    height: 85,
-                                    width: 80,
-                                    fit: BoxFit.cover,
+                          if (cantidad == 0) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 15),
+                              child: Row (
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      imageUrl,
+                                      height: 85,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      title,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 18,
+                                  SizedBox(width: 10),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        title,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 18,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      description,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        description,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      price,
-                                      style: const TextStyle(
-                                        color: Colors.pink,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        price,
+                                        style: const TextStyle(
+                                          color: Colors.pink,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(width: 10),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ModificarProducto(id: id)));
+                                        },
+                                        child: const ContainerIconButtonModel(
+                                          icon: CupertinoIcons.settings,
+                                          iconColor: Colors.grey,
+                                          iconSize: 20,
+                                          containerWidth: 50,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                                Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ModificarProducto(id: id)));
-                                      },
-                                      child: const ContainerIconButtonModel(
-                                        icon: CupertinoIcons.settings,
-                                        iconColor: Colors.grey,
-                                        iconSize: 20,
-                                        containerWidth: 50,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    DeleteProductPopUp(id: id, name: title),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
+                                      const SizedBox(width: 5),
+                                      DeleteProductPopUp(id: id, name: title),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
                           } else {
                             // Show an empty container if the condition is not met
                             return Container();

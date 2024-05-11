@@ -2,6 +2,7 @@ import 'package:store/controllers/productController.dart';
 import 'package:store/screens/product_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:store/screens/product_list_zero_screen.dart';
 import '../controllers/recordController.dart';
 import 'formularioProducto.dart';
 import 'login_screen.dart';
@@ -66,7 +67,7 @@ class OrderList extends StatelessWidget {
               title: const Text('Sin Stock'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderList()));
+                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
               },
             ),
             ListTile(

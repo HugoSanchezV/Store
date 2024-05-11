@@ -1,5 +1,6 @@
 import 'package:store/controllers/productController.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
+import 'package:store/screens/product_list_zero_screen.dart';
 import 'package:store/widgets/container_icon_button_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _ProductListAMState extends State<ProductListAM> {
               title: const Text('Sin Stock'),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderList()));
+                    MaterialPageRoute(builder: (context) => ProductListZeroAM()));
               },
             ),
             ListTile(
@@ -132,7 +133,7 @@ class _ProductListAMState extends State<ProductListAM> {
                           if (cantidad > 0) {
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 15),
-                            child: Row(
+                            child: Row (
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 ClipRRect(
