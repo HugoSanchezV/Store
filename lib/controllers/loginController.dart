@@ -1,4 +1,5 @@
 import 'package:store/apis/login_api.dart';
+import 'package:store/controllers/userController.dart';
 import 'package:store/tdo/loginTDO.dart';
 import 'package:store/dao/login_dao.dart';
 import 'package:store/apis/belong_to_api.dart';
@@ -8,6 +9,27 @@ import '../apis/api_crud.dart';
 class loginController {
   final ApiLogin<loginTDO> _login = LoginDao();
 
+  Future<bool> isAdmin(String email) async {
+    UserController userController = UserController();
+
+
+    return await userController.getAll().then((user) {
+      for (var usersData in user) {
+        String id = usersData.keys.first;
+        Map<String, dynamic> userDetails = usersData[id];
+        for (var key in userDetails.keys) {
+          if (key == "email" && userDetails[key] == email) {
+            if(userDetails['admin'] == 1){
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+      return false;
+    });
+  }
 
   Future<bool> CredentialVerification(email, password) async
   {

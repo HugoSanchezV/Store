@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/screens/forgot_screen.dart';
+import 'package:store/screens/menu.dart';
 import 'package:store/screens/product_screen.dart';
 import 'package:store/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 15),
                           TextFormField(
-                            obscureText: true,
+                            obscureText: _obscureTextTwo,
                             decoration: InputDecoration(
                               labelText: "Ingresar contraseña",
                               border: OutlineInputBorder(),
@@ -123,11 +124,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if(await login.CredentialVerification(_correo, _contrasena)){
                                   final prefs = await SharedPreferences.getInstance();
                                   await prefs.setString('userEmail', _emailController.text);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => principalCliente(),
-                                      ));
+                                  if(await login.isAdmin(_correo)){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AdminHomePage(),
+                                        ));
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => principalCliente(),
+                                        ));
+                                  }
                                 }
                               }
 
