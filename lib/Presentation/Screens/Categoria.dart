@@ -6,6 +6,8 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:typed_data';
 
+import '../../controllers/productController.dart';
+import '../../screens/product_screen.dart';
 import 'main_screen.dart';
 
 
@@ -13,58 +15,10 @@ import 'main_screen.dart';
 class pantallaInicial extends StatelessWidget {
 
   String nombreCategoria = "";
+  int conteo2 =0;
+  List<Producto> listaProductos = [];
   pantallaInicial({required this.nombreCategoria});
 
-  List<Producto> productos = [
-    Producto(
-      nombre: 'Producto A',
-      precio: '10.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Buena calidad',
-      descuento: '10%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto B',
-      precio: '15.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Excelente servicio',
-      descuento: '15%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto C',
-      precio: '20.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Recomendado',
-      descuento: '20%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto D',
-      precio: '10.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Buena calidad',
-      descuento: '10%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto E',
-      precio: '15.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Excelente servicio',
-      descuento: '15%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto F',
-      precio: '20.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Recomendado',
-      descuento: '20%',
-      categoria: "Pantalon",
-    ),
-  ];
 
 
 
@@ -76,65 +30,8 @@ class pantallaInicial extends StatelessWidget {
 
           color: Colors.pink,
         ),
-        /*leading: PopupMenuButton<int>(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 1,
-              child: Row(
-                children: [
-                  Icon(Icons.list_alt),
-                  SizedBox(width: 8),
-                  Text('Lista de pedidos'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: 2,
-              child: Row(
-                children: [
-                  Icon(Icons.notifications),
-                  SizedBox(width: 8),
-                  Text('Notificaciones'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: 3,
-              child: Row(
-                children: [
-                  Icon(Icons.shopping_cart),
-                  SizedBox(width: 8),
-                  Text('Pedidos'),
-                ],
-              ),
-            ),
-          ],
-          onSelected: (value) {
-
-            switch (value) {
-              case 1:
-                print('Inicio seleccionado');
-                break;
-              case 2:
-                print('Perfil seleccionado');
-                break;
-              case 3:
-                print('Configuración seleccionada');
-                break;
-            }
-          },
-        ),*/
-
         actions: [
 
-          IconButton(
-            color: Colors.pink,
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: CustomSearchDelegate());
-
-            },
-          ),
           IconButton(
             color: Colors.pink,
             icon: Icon(Icons.shopping_cart),
@@ -168,191 +65,229 @@ class pantallaInicial extends StatelessWidget {
                 children: [
                   //SizedBox(height: 20,),
 
-                  Column(
-                    children: [
-                      // Línea
-                      Divider(
-                        color: Colors.black,
-                        thickness: 1.0, // Grosor de la línea
-                      ),
-
-                      // Texto
-                      Text(
-                        nombreCategoria,
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 20,),
+                  SizedBox(height: 10,),
 
 
 
-                  ClipRRect(
+                  FutureBuilder<List<dynamic>>(
+                    future: ProductController().getAll(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        listaProductos.clear();
+                        conteo2 = 0;
+                        // Data is ready, display the list
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            // Access and use product data from the snapshot
+                            String id = snapshot.data![index].keys.first;
+                            Map<String, dynamic> productDetails =
+                            snapshot.data![index][id];
+                            String img = productDetails["img"];
+                            String title = productDetails["nombre"];
+                            String description =
+                                "${productDetails["descripcion"].toString().substring(0, 17)}...";
+                            String price = "\$${productDetails["precio"]}";
+                            int cantidad = int.parse(productDetails["cantidad"].toString());
+                            int descuento = int.parse(productDetails['descuento'].toString());
+                            String categoria = productDetails['categoria'];
 
-                    //borderRadius: BorderRadius.circular(10),
+                            if(categoria == nombreCategoria){
+                              listaProductos.add(Producto(id: id,nombre: title, precio: price, imagenUrl: img, descuento: descuento, categoria: categoria));
+                            }
 
+                            conteo2 ++;
+                            if(conteo2 == snapshot.data!.length){
+                              conteo2 = 0;
 
-                    child: GridView.builder(
-                        itemCount: productos.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.6,
-                          crossAxisSpacing: 2,
-                        ), itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: (){
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingList()));
+                              return Container(
+                                //borderRadius: BorderRadius.circular(10),
 
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) => principalPedidos()));
-                          //código para mostrar la pantalla de producto
-                          print("Prueba221312");
-                        },
-                        child: Container(
-
-                          margin: EdgeInsets.all(10),
-                          //margin: EdgeInsets.only(right: 10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                //height: 200,
-
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 child: Column(
                                   children: [
-
-
-                                    //Imagen del producto
-
-                                    Stack(
-
-                                      children: [
-                                        InkWell(
-
-                                          onTap: () {},
-                                          child: ClipRRect(
-
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10),
-                                                topLeft: Radius.circular(10)),
-                                            child: Container(
-                                              color: Color(0xFFF0F0F0),
-                                              padding: EdgeInsets.all(5),
-                                              child: Image.asset(
-                                                  productos[index].imagenUrl),
-                                            ),
-
+                                    Container(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Divider(
+                                            color: Colors.white,
+                                            thickness: 1.0,
                                           ),
-                                        ),
 
-                                      ],
-
+                                          // Texto
+                                          Text(
+                                            nombreCategoria,
+                                            style: TextStyle(
+                                              fontSize: 30.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
 
-
-                                    //Información del producto
                                     Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.pink,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(5),
-                                        child: Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
-                                              // Alinear el texto a la izquierda
-                                              children: [
-                                                Row(
+                                      child: GridView.builder(
+                                          itemCount: listaProductos.length,
+                                          //itemCount: nombreProductos.length,
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 0.6,
+                                            crossAxisSpacing: 2,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => ProductScreen(id: listaProductos[index].id)));
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.all(10),
+                                                //margin: EdgeInsets.only(right: 10),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      productos[index].nombre,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
 
-                                                Row(
-                                                  children: [
-                                                    /*Icon(Icons.star, color: Colors.amber, size: 15,),
-                                                        Text(
-                                                          reviews[index],
-                                                          style: TextStyle(
-                                                            color: Colors.white,
+                                                    Container(
+                                                      //height: 200,
+                                                      child: Column(
+                                                        children: [
+                                                          //Imagen del producto
+
+                                                          Stack(
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () {},
+                                                                child: ClipRRect(
+                                                                  borderRadius: BorderRadius.only(
+                                                                      topRight:
+                                                                      Radius.circular(10),
+                                                                      topLeft:
+                                                                      Radius.circular(10)),
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                                                                    child:
+                                                                    GestureDetector(
+                                                                      onTap: () {
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                                builder: (context) => ProductScreen(id: listaProductos[index].id)));
+                                                                      },
+                                                                      child: Image.network(
+                                                                        listaProductos[index].imagenUrl,
+                                                                        width: double.maxFinite,
+                                                                        height: 220,
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ),
-                                                        SizedBox(width: 10,),*/
-                                                    Text(
-                                                      productos[index].precio,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 10,
-                                                        fontWeight: FontWeight
-                                                            .bold,
+
+                                                          //Información del producto
+
+
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.pink,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius.circular(10),
+                                                                  bottomRight:
+                                                                  Radius.circular(10)),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: EdgeInsets.all(5),
+                                                              child: Row(
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            listaProductos[index].nombre.length > 13
+                                                                                ? listaProductos[index].nombre.substring(0, 10) + "..."
+                                                                                : listaProductos[index].nombre,
+                                                                            style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 22,
+                                                                              fontWeight:
+                                                                              FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+
+                                                                        children: [
+
+                                                                          Text(
+                                                                            listaProductos[index].precio,
+                                                                            style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 15,
+                                                                              fontWeight:
+                                                                              FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
+
+                                                    //SizedBox(height: 10,),
                                                   ],
                                                 ),
-                                              ],
-                                            ),
-                                            Spacer(),
-                                            // Este widget ocupa todo el espacio disponible
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  height: 20,
-                                                  width: 20,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius
-                                                        .circular(20),
-                                                  ),
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons
-                                                            .add_shopping_cart_sharp,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                              ),
 
+
+                                            );
+
+                                          }),
                                     ),
                                   ],
                                 ),
 
-                              ),
 
+                              );
+                            }else{
+                              return Container();
+                            }
 
-                              //SizedBox(height: 10,),
-
-
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        // Handle error
+                        return Center(child: Text(snapshot.error.toString()));
+                      } else {
+                        // Show loading indicator while data is being fetched
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
                   ),
 
 
@@ -371,63 +306,18 @@ class pantallaInicial extends StatelessWidget {
 }
 
 
-
-class CustomSearchDelegate extends SearchDelegate<String> {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-      // Agrega el botón o icono deseado aquí
-      IconButton(
-        icon: Icon(Icons.arrow_forward_ios),
-        onPressed: () {
-          // Acción cuando se presiona el botón de agregar
-          print('Se presionó el botón de agregar');
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, 'null');
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container();
-  }
-}
-
-
 class Producto {
+  final String id;
   final String nombre;
   final String precio;
   final String imagenUrl;
-  final String review;
-  final String descuento;
+  final int descuento;
   final String categoria;
 
   Producto(
-      {required this.nombre,
+      {required this.id ,required this.nombre,
         required this.precio,
         required this.imagenUrl,
-        required this.review,
         required this.descuento,
         required this.categoria});
 }

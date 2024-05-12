@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../controllers/productController.dart';
 import '../../screens/formularioProducto.dart';
 import '../../screens/login_screen.dart';
 import '../../screens/orders_list_screen.dart';
@@ -15,79 +16,13 @@ class principalCliente extends StatelessWidget {
   //principalCliente({required this.productos});
   String categoriaSeleccionada = "";
 
-  //Producto productos = Producto(nombre: "nombre", precio: "precio", imagenUrl: "imagenUrl", review: "review", descuento: "");
-  List<Categoria> categorias = [
-    Categoria(
-      nombre: 'Camisa',
-      imagenUrl: 'assets/productos/Camisa.jpg',
-    ),
-    Categoria(
-      nombre: 'Pantalon',
-      imagenUrl: 'assets/productos/Camisa.jpg',
-    ),
-    Categoria(
-      nombre: 'Camisa',
-      imagenUrl: 'assets/productos/Camisa.jpg',
-    ),
-    Categoria(
-      nombre: 'Pantalon',
-      imagenUrl: 'assets/productos/Camisa.jpg',
-    ),
-  ];
-  List<Producto> productos = [
-    Producto(
-      nombre: 'Producto A',
-      precio: '10.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Buena calidad',
-      descuento: '10%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto B',
-      precio: '15.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Excelente servicio',
-      descuento: '15%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto C',
-      precio: '20.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Recomendado',
-      descuento: '20%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto D',
-      precio: '10.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Buena calidad',
-      descuento: '10%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto E',
-      precio: '15.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Excelente servicio',
-      descuento: '15%',
-      categoria: "Pantalon",
-    ),
-    Producto(
-      nombre: 'Producto F',
-      precio: '20.99',
-      imagenUrl: 'assets/productos/Pantalon.jpg',
-      review: 'Recomendado',
-      descuento: '20%',
-      categoria: "Pantalon",
-    ),
-  ];
-  List<List<Producto>> matrizOfertas = [];
+  List<Categoria> listaCategorias = [];
+  List<Producto> listaProductos = [];
+  Set<String> nombresCategorias = Set();
+  Set<String> nombresProductos = Set();
+  int conteo = 0;
+  int conteo2 = 0;
 
-
-  void ingresarMatriz() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,13 +30,7 @@ class principalCliente extends StatelessWidget {
       appBar: AppBar(
 
         actions: [
-          /*IconButton(
-            icon: Icon(Icons.search),
-            color: Colors.pink,
-            onPressed: () {
-              showSearch(context: context, delegate: CustomSearchDelegate());
-            },
-          ),*/
+
           IconButton(
             icon: Icon(Icons.shopping_cart),
             color: Colors.pink,
@@ -138,15 +67,7 @@ class principalCliente extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => UserDataScreen()));
               },
             ),
-            ListTile(
-              leading: Icon(Icons.list_rounded),
-              title: Text('Lista de compras'),
-              onTap: () {
-                //Código para conectar pantalla de lista de compras
-                /*Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AgregarProducto()));*/
-              },
-            ),
+            
 
             ListTile(
               leading: Icon(Icons.no_accounts),
@@ -169,33 +90,54 @@ class principalCliente extends StatelessWidget {
                 children: [
                   //SizedBox(height: 20,),
 
-                  Container(
-                    width: double.infinity,
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Línea
-                            Divider(
-                              color: Colors.white,
-                              thickness: 0.0, // Grosor de la línea
-                            ),
+                Container(
+                width: double.infinity,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
 
-                            // Texto
-                            Text(
-                              'Categorias',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    Container(
+
+                      height: 250,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black,
+                          image: DecorationImage(
+                            image: AssetImage("images/imagen1.png"),
+                            fit: BoxFit.cover,
+                            opacity: 0.5,
+                          )
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.shopping_cart,
+                            size: 200,
+                            color: Colors.pink,
+                          ),
+                          Text(
+                            "MASTER FITNESS",
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
                             ),
-                          ],
-                        ),
-                        /*ClipRRect(
+                          )
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+
+
+                    /*ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
                             color: Colors.white,
@@ -206,135 +148,345 @@ class principalCliente extends StatelessWidget {
                           ),
                         ),*/
 
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            color: Colors.white,
-                            //color: Color(0xFFFFFFDE),
-                            child: Container(
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        color: Colors.white,
+                        //color: Color(0xFFFFFFDE),
+                        child: Container(
 
-                              child: _categorias(),
+                          child: FutureBuilder<List<dynamic>>(
+                            future: ProductController().getAll(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                // Data is ready, display the list
+                                return ListView.builder(
+                                  itemCount: snapshot.data!.length,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    // Access and use product data from the snapshot
+                                    String id = snapshot.data![index].keys.first;
+                                    Map<String, dynamic> productDetails =
+                                    snapshot.data![index][id];
+                                    String img = productDetails["img"];
+                                    String title = productDetails["nombre"];
+                                    String description =
+                                        "${productDetails["descripcion"].toString().substring(0, 17)}...";
+                                    String price = "\$${productDetails["precio"]}";
+                                    int cantidad = int.parse(productDetails["cantidad"].toString());
+                                    String categoria = productDetails['categoria'];
 
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Divider(
-                              color: Colors.white,
-                              thickness: 1.0,
-                            ),
 
-                            // Texto
-                            Text(
-                              'Descuentos',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                                    //nombresCategorias.add(categoria);
+                                    listaCategorias.add(Categoria(nombre: categoria, imagenUrl: img));
+                                    /*List<String> listPrueba = List.from(nombresCategorias);
 
-                  ClipRRect(
-                    //borderRadius: BorderRadius.circular(10),
 
-                    child: GridView.builder(
-                        itemCount: productos.length,
-                        //itemCount: nombreProductos.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.6,
-                          crossAxisSpacing: 2,
-                        ),
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProductScreen(id: id)));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(10),
-                              //margin: EdgeInsets.only(right: 10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    //height: 200,
 
-                                    child: Column(
-                                      children: [
-                                        //Imagen del producto
 
-                                        Stack(
+                                    print(categoria);
+                                    if(listPrueba.length == nombresCategorias.length){
+                                      for(int i=0;i<listPrueba.length;i++){
+                                        print(listPrueba[i]);
+                                        if(categoria == listPrueba[i]){
+
+                                          imgCategorias.add(img);
+                                        }
+                                      }
+                                    }
+                                    print(nombresCategorias.length);
+                                    print(imgCategorias.length);*/
+
+                                    Map<String, String> categoriasConImagenes = {};
+
+                                    listaCategorias.forEach((categoria) {
+
+                                      if (!categoriasConImagenes.containsKey(categoria.nombre)) {
+                                        categoriasConImagenes[categoria.nombre] = categoria.imagenUrl;
+                                      }
+                                    });
+
+
+                                    listaCategorias = categoriasConImagenes.entries.map((entry) => Categoria(nombre: entry.key, imagenUrl: entry.value)).toList();
+
+
+
+                                    //print(listaCategorias.length);
+                                    //print(categoriasConImagenes.length);
+
+                                    conteo++;
+                                    //print(conteo);
+                                    //print(snapshot.data!.length);
+                                    if(conteo == snapshot.data!.length){
+                                      conteo =0 ;
+                                      return Container(
+                                        child: Column(
                                           children: [
-                                            InkWell(
-                                              onTap: () {},
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(10),
-                                                    topLeft:
-                                                        Radius.circular(10)),
-                                                child: Container(
-                                                  color: Color(0xFFF0F0F0),
-                                                  padding: EdgeInsets.all(5),
-                                                  child: Image.asset(
-                                                      productos[index]
-                                                          .imagenUrl),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                             Container(
+                                               padding: EdgeInsets.only(left: 15),
+                                               child: Column(
+                                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                                 children: [
+                                                   // Línea
+                                                   Divider(
+                                                     color: Colors.white,
+                                                     thickness: 0.0, // Grosor de la línea
+                                                   ),
 
-                                        //Información del producto
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.pink,
-                                            borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(10),
-                                                bottomRight:
-                                                    Radius.circular(10)),
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(5),
-                                            child: Row(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start, // Alinear el texto a la izquierda
-                                                  children: [
-                                                    Row(
+                                                   // Texto
+                                                   Text(
+                                                     'Categorias',
+                                                     style: TextStyle(
+                                                       fontSize: 30.0,
+                                                       fontWeight: FontWeight.bold,
+                                                     ),
+                                                   ),
+                                                 ],
+                                               ),
+                                             ),
+
+
+                                              Container(
+                                              width: double.infinity,
+                                              height: 150.0,
+                                              child: Swiper(
+                                                viewportFraction: 0.33,
+                                                scale: 0.9,
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      obtenerCategoriaSeleccionada(context, index);
+
+                                                    },
+                                                    child: Column(
                                                       children: [
+                                                        Container(
+                                                          height: 100,
+                                                          width: 100,
+                                                          child: Image.network(listaCategorias[index].imagenUrl),
+                                                        ),
                                                         Text(
-                                                          productos[index]
-                                                              .nombre,
+                                                          listaCategorias[index].nombre,
                                                           style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            fontSize: 17,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        /*Icon(Icons.star, color: Colors.amber, size: 15,),
+                                                  );
+                                                },
+                                                control: SwiperControl(
+                                                  color: Colors.pink,
+                                                ),
+                                                itemCount: listaCategorias.length,
+                                                pagination: SwiperPagination(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }else{
+                                      return Container();
+                                    }
+
+
+
+                                  },
+                                );
+                              } else if (snapshot.hasError) {
+                                // Handle error
+                                return Center(child: Text(snapshot.error.toString()));
+                              } else {
+                                // Show loading indicator while data is being fetched
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+
+
+
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                  ],
+                ),
+              ),
+
+
+                  FutureBuilder<List<dynamic>>(
+                    future: ProductController().getAll(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        listaProductos.clear();
+                        conteo2 = 0;
+                        // Data is ready, display the list
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            // Access and use product data from the snapshot
+                            String id = snapshot.data![index].keys.first;
+                            Map<String, dynamic> productDetails =
+                            snapshot.data![index][id];
+
+                            String img = productDetails["img"];
+                            String title = productDetails["nombre"];
+                            String description =
+                                "${productDetails["descripcion"].toString().substring(0, 17)}...";
+                            String price = "\$${productDetails["precio"]}";
+                            int cantidad = int.parse(productDetails["cantidad"].toString());
+                            int descuento = int.parse(productDetails['descuento'].toString());
+                            String categoria = productDetails['categoria'];
+
+                            if(descuento <= 20){
+                              listaProductos.add(Producto(id: id,nombre: title, precio: price, imagenUrl: img, descuento: descuento, categoria: categoria));
+                            }
+                            conteo2 ++;
+                            if(conteo2 == snapshot.data!.length){
+                              conteo2 = 0;
+                              return Container(
+                                //borderRadius: BorderRadius.circular(10),
+
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Divider(
+                                            color: Colors.white,
+                                            thickness: 1.0,
+                                          ),
+
+                                          // Texto
+                                          Text(
+                                            '¡Oferta de 20% o menos!',
+                                            style: TextStyle(
+                                              fontSize: 30.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Container(
+                                      child: GridView.builder(
+                                          itemCount: listaProductos.length,
+                                          //itemCount: nombreProductos.length,
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 0.6,
+                                            crossAxisSpacing: 2,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => ProductScreen(id: listaProductos[index].id)));
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.all(10),
+                                                //margin: EdgeInsets.only(right: 10),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+
+                                                    Container(
+                                                      //height: 200,
+                                                      child: Column(
+                                                        children: [
+                                                          //Imagen del producto
+
+                                                          Stack(
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () {},
+                                                                child: ClipRRect(
+                                                                  borderRadius: BorderRadius.only(
+                                                                      topRight:
+                                                                      Radius.circular(10),
+                                                                      topLeft:
+                                                                      Radius.circular(10)),
+                                                                    child: ClipRRect(
+                                                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                                                                      child:
+                                                                        GestureDetector(
+                                                                          onTap: () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => ProductScreen(id: listaProductos[index].id)));
+                                                                          },
+                                                                          child: Image.network(
+                                                                            listaProductos[index].imagenUrl,
+                                                                            width: double.maxFinite,
+                                                                            height: 220,
+                                                                            fit: BoxFit.cover,
+                                                                          ),
+                                                                        ),
+
+                                                                    ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+
+                                                          //Información del producto
+
+
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.pink,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius.circular(10),
+                                                                  bottomRight:
+                                                                  Radius.circular(10)),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: EdgeInsets.all(5),
+                                                              child: Row(
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start, // Alinear el texto a la izquierda
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            listaProductos[index].nombre.length > 13
+                                                                                ? listaProductos[index].nombre.substring(0, 10) + "..."
+                                                                                : listaProductos[index].nombre,
+                                                                            style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 22,
+                                                                              fontWeight:
+                                                                              FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          /*Icon(Icons.star, color: Colors.amber, size: 15,),
                                                         Text(
                                                           reviews[index],
                                                           style: TextStyle(
@@ -342,60 +494,82 @@ class principalCliente extends StatelessWidget {
                                                           ),
                                                         ),
                                                         SizedBox(width: 10,),*/
-                                                        Text(
-                                                          productos[index]
-                                                              .precio,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                                          Text(
+                                                                            listaProductos[index].precio,
+                                                                            style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 15,
+                                                                              fontWeight:
+                                                                              FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Spacer(), // Este widget ocupa todo el espacio disponible
+                                                                  Column(
+                                                                    children: [
+                                                                      Container(
+                                                                        height: 20,
+                                                                        width: 20,
+                                                                        decoration: BoxDecoration(
+                                                                          borderRadius:
+                                                                          BorderRadius
+                                                                              .circular(20),
+                                                                        ),
+                                                                        /*child: InkWell(
+                                                                    onTap: () {},
+                                                                    child: Center(
+                                                                      child: Icon(
+                                                                        Icons
+                                                                            .add_shopping_cart_sharp,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),*/
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                Spacer(), // Este widget ocupa todo el espacio disponible
-                                                Column(
-                                                  children: [
-                                                    Container(
-                                                      height: 20,
-                                                      width: 20,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                      ),
-                                                      child: InkWell(
-                                                        onTap: () {},
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons
-                                                                .add_shopping_cart_sharp,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
 
-                                  //SizedBox(height: 10,),
-                                ],
-                              ),
-                            ),
-                          );
-                          ;
-                        }),
+                                                    //SizedBox(height: 10,),
+                                                  ],
+                                                ),
+                                              ),
+
+
+                                            );
+
+                                          }),
+                                    ),
+                                  ],
+                                ),
+
+
+                              );
+                            }else{
+                              return Container();
+                            }
+
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        // Handle error
+                        return Center(child: Text(snapshot.error.toString()));
+                      } else {
+                        // Show loading indicator while data is being fetched
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
                   ),
+
 
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -480,44 +654,161 @@ class principalCliente extends StatelessWidget {
     );
   }
 
-  Widget _categorias() {
-    return Container(
+  /*Widget _categorias() {
 
-      width: double.infinity,
-      height: 110.0,
-      child: Swiper(
+    Set<Categoria> conjuntoCategorias = Set<Categoria>();
+
+    List<Categoria> listaCategorias = [];
+    return FutureBuilder<List<dynamic>>(
+      future: ProductController().getAll(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // Data is ready, display the list
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              // Access and use product data from the snapshot
+              String id = snapshot.data![index].keys.first;
+              Map<String, dynamic> productDetails =
+              snapshot.data![index][id];
+              String imageUrl = productDetails["img"];
+              String title = productDetails["nombre"];
+              String description =
+                  "${productDetails["descripcion"].toString().substring(0, 17)}...";
+              String price = "\$${productDetails["precio"]}";
+              int cantidad = int.parse(productDetails["cantidad"].toString());
+              int descuento = int.parse(productDetails['descuento'].toString());
+              String categoria = productDetails['categoria'];
+
+              conjuntoCategorias.add(Categoria(nombre: categoria, imagenUrl: imageUrl));
 
 
-        viewportFraction: 0.33,
-        scale: 0.9,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              obtenerCategoriaSeleccionada(context, index);
-            },
-            child: Container(
-              height: 100,
-              width: 100,
-              child: Image.asset(categorias[index].imagenUrl),
-            )
-            
-            /*child: ClipOval(
+              print(conjuntoCategorias.toList());
+
+              List<Categoria> listaCategorias = conjuntoCategorias.toList();
+              return Container(
+
+                width: double.infinity,
+                height: 110.0,
+
+                child: Swiper(
+
+
+                  viewportFraction: 0.33,
+                  scale: 0.9,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                        onTap: () {
+                          obtenerCategoriaSeleccionada(context, index);
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          child: Image.network(listaCategorias[index].imagenUrl),
+                        )
+
+                      /*child: ClipOval(
                 child: Image.asset(imagenesCategorias[index],fit: BoxFit.cover,width: 50,height: 50,),
               )*/
+                    );
+                    //return Image.asset(imagenesCategorias[index],fit: BoxFit.cover,);
+
+                  },
+                  control: SwiperControl(
+                    color: Colors.pink, // Color para los controles laterales
+                  ),
+                  itemCount: listaCategorias.length,
+                  pagination: SwiperPagination(),
+
+                ),
+
+              );
+            },
           );
-          //return Image.asset(imagenesCategorias[index],fit: BoxFit.cover,);
-
-        },
-        control: SwiperControl(
-          color: Colors.pink, // Color para los controles laterales
-        ),
-        itemCount: categorias.length,
-        pagination: SwiperPagination(),
-
-      ),
-
+        } else if (snapshot.hasError) {
+          // Handle error
+          return Center(child: Text(snapshot.error.toString()));
+        } else {
+          // Show loading indicator while data is being fetched
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
+
+
+
+  }*/
+  Widget _categorias() {
+    List<Categoria> listaCategorias = [];
+
+    return FutureBuilder<List<dynamic>>(
+      future: ProductController().getAll(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // Data is ready, display the list
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              // Access and use product data from the snapshot
+              String id = snapshot.data![index].keys.first;
+              Map<String, dynamic> productDetails =
+              snapshot.data![index][id];
+              String img = productDetails["img"];
+              String title = productDetails["nombre"];
+              String description =
+                  "${productDetails["descripcion"].toString().substring(0, 17)}...";
+              String price = "\$${productDetails["precio"]}";
+              int cantidad = int.parse(productDetails["cantidad"].toString());
+              String categoria = productDetails['categoria'];
+
+              //listaCategorias.add(Categoria(nombre: categoria, imagenUrl: img));
+
+
+              return Container(
+                width: double.infinity,
+                height: 110.0,
+                child: Swiper(
+                  viewportFraction: 0.33,
+                  scale: 0.9,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        obtenerCategoriaSeleccionada(context, index);
+                      },
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        child: Image.network(listaCategorias[index].imagenUrl),
+                      ),
+                    );
+                  },
+                  control: SwiperControl(
+                    color: Colors.pink,
+                  ),
+                  itemCount: listaCategorias.length,
+                  pagination: SwiperPagination(),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          // Handle error
+          return Center(child: Text(snapshot.error.toString()));
+        } else {
+          // Show loading indicator while data is being fetched
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+
   }
+
 
   void obtenerCategoriaSeleccionada(BuildContext context, int i) {
     /*List<Producto> productos = [
@@ -546,51 +837,13 @@ class principalCliente extends StatelessWidget {
         review: "54",
       ),
     ];*/
-    List<Producto> listaNueva = [];
-    if (i == 0) {
-      categoriaSeleccionada = "Pantalones";
 
-      for (int i = 0; i < productos.length; i++) {
-        int j = 0;
-        if (productos[i].categoria == categoriaSeleccionada) {
-          listaNueva.add(productos[i]);
-        }
-      }
-    }
-    if (i == 1) {
-      categoriaSeleccionada = "Camisas";
-
-      for (int i = 0; i < productos.length; i++) {
-        int j = 0;
-        if (productos[i].categoria == categoriaSeleccionada) {
-          listaNueva.add(productos[i]);
-        }
-      }
-    }
-    if (i == 2) {
-      categoriaSeleccionada = "Blusas";
-      for (int i = 0; i < productos.length; i++) {
-        int j = 0;
-        if (productos[i].categoria == categoriaSeleccionada) {
-          listaNueva.add(productos[i]);
-        }
-      }
-    }
-    if (i == 3) {
-      categoriaSeleccionada = "Faldas";
-      for (int i = 0; i < productos.length; i++) {
-        int j = 0;
-        if (productos[i].categoria == categoriaSeleccionada) {
-          listaNueva.add(productos[i]);
-        }
-      }
-    }
-
+    //print(listaProductos.length);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                pantallaInicial(nombreCategoria: categoriaSeleccionada)));
+                pantallaInicial(nombreCategoria: listaCategorias[i].nombre)));
   }
 }
 
@@ -637,22 +890,22 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 }
 
 class Producto {
+  final String id;
   final String nombre;
   final String precio;
   final String imagenUrl;
-  final String review;
-  final String descuento;
+  final int descuento;
   final String categoria;
 
   Producto(
-      {required this.nombre,
+      {required this.id,required this.nombre,
       required this.precio,
       required this.imagenUrl,
-      required this.review,
       required this.descuento,
       required this.categoria});
 }
 class Categoria {
+
   final String nombre;
   final String imagenUrl;
 
