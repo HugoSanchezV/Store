@@ -5,6 +5,7 @@ import 'package:store/dao/producto_dao.dart';
 import 'dart:io';
 import '../controllers/productController.dart';
 import '../widgets/container_button_motel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class ProductScreen extends StatefulWidget {
@@ -32,13 +33,17 @@ class _ProductScreenState extends State<ProductScreen> {
   String descuento = "";
   String categoria = "";
   String _url = "";
-
-
+  List<String> images = [
+    "images/image1.jpg",
+    "images/image1.jpg",
+    "images/image1.jpg",
+  ];
 
   @override
   void initState() {
     super.initState();
     ProductController productController = ProductController();
+    print("Iniciar> ");
     productController.getById(id).then((product) {
       // Update UI with product data
        nombre = product[0]['nombre'];
@@ -51,21 +56,20 @@ class _ProductScreenState extends State<ProductScreen> {
        descuento = product[0]['descuento'].toString();
        categoria = product[0]['categoria'].toString();
        _url = product[0]['img'];
-      // ... update other controllers similarly
+       images[0] = _url;
+       images[1] = _url;
+       images[2] = _url;
+       // ... update other controllers similarly
       setState(() {}); // Trigger UI rebuild
     });
   }
 
-  List<String> images = [
-    "images/image1.jpg",
-    "images/image1.jpg",
-    "images/image1.jpg",
-    "images/image1.jpg"
-  ];
+
 
 
   @override
   Widget build(BuildContext context) {
+    List<String> imageUrlStrings = images.map((url) => url.toString()).toList();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -86,8 +90,8 @@ class _ProductScreenState extends State<ProductScreen> {
                   child: FanCarouselImageSlider(
                     sliderHeight: 430,
                     autoPlay: true,
-                    imagesLink: images,
-                    isAssets: true,
+                    imagesLink: imageUrlStrings,
+                    isAssets: false,
                   ),
                 ),
                 Row(
@@ -107,7 +111,11 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          "mas textos",
+                          "Color: "+color+
+                              "\nTalla: "+talla+
+                              "\nMarca: "+marca+
+                              "\nCantidad: "+cantidad,
+
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -116,7 +124,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       ],
                     ),
                     Text(
-                      precio,
+                      "\$"+precio,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.pink,
@@ -147,11 +155,12 @@ class _ProductScreenState extends State<ProductScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child:  Text(
+                    "Descripción:\n"+
                     descripcion,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
-                      fontSize: 10,
+                      color: Colors.black,
+                      fontSize: 17,
                     ),
                   ),
                 ),
