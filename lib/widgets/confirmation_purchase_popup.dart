@@ -1,10 +1,14 @@
+import 'package:provider/provider.dart';
+import 'package:store/controllers/productController.dart';
 import 'package:store/screens/review_screen.dart';
 import 'package:store/screens/splash_screen.dart';
 import 'package:store/widgets/container_button_motel.dart';
 import 'package:flutter/material.dart';
 
-class ConfirmationPurchasePopUp extends StatelessWidget {
+import '../models/cart.dart';
+import '../tdo/productTDO.dart';
 
+class ConfirmationPurchasePopUp extends StatelessWidget {
   final iStyle = TextStyle(
     color: Colors.black87,
     fontWeight: FontWeight.w600,
@@ -13,6 +17,8 @@ class ConfirmationPurchasePopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
+
     return InkWell(
       onTap: (){
         showModalBottomSheet(
@@ -42,7 +48,7 @@ class ConfirmationPurchasePopUp extends StatelessWidget {
                           style: iStyle
                       ),
                       Text(
-                        "\$999.00",
+                          "\$${cart.totalAmount.toStringAsFixed(2)}",
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -53,11 +59,38 @@ class ConfirmationPurchasePopUp extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ReviewScreen(),
-                          ));
+                      cart.items.forEach((key, value) async {
+                        List productCurrent = await ProductController().getById(value.id);
+                          var product = productCurrent[0];
+                          var nombre = product['nombre'];
+                          var descripcion = product['descripcion'];
+                          var color = product['color'];
+                          var talla = product['talla'];
+                          var marca = product['marca'];
+                          var img = product['img'];
+                          var cantidad = product['cantidad'];
+                          var precio = product['precio'];
+                          var descuento = product['descuento'];
+                          var categoria = product['categoria'];
+                          ProductController().update(value.id, ProductTDO(
+                              nombre: nombre,
+                              descripcion: descripcion,
+                              color: color,
+                              talla: talla,
+                              marca: marca,
+                              img: img,
+                              cantidad: cantidad - value.quantity,
+                              precio: precio,
+                              descuento: descuento,
+                              categoria: categoria));
+                      });
+                      cart.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Se ha realizado la compra.'),
+                        ),
+                      );
+                      Navigator.of(context).pop(); // Cierra el popup después de confirmar
                     },
                     child: Text(
                       "Confirmar",

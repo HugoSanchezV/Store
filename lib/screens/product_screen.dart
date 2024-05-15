@@ -1,9 +1,12 @@
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:store/dao/producto_dao.dart';
 import 'dart:io';
 import '../controllers/productController.dart';
+import '../models/cart.dart';
+import '../models/product.dart';
 import '../widgets/container_button_motel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -185,7 +188,23 @@ class _ProductScreenState extends State<ProductScreen> {
 
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Product product = Product(
+                          id: id,
+                          nombre: nombre,
+                          cantidad: int.parse(cantidad),
+                          precio: double.parse(precio),
+                          descuento: double.parse(descuento),
+                          imageUrl: _url,
+                        );
+                        Provider.of<Cart>(context, listen: false).addItemp(product);
+                        Provider.of<Cart>(context, listen: false).printAllItems();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Se ha agregado al carrito de compras.'),
+                          ),
+                        );
+                      },
                       child: ContainerButtonModel(
                         itext: "Comprar ahora",
                         containerWidth: 250 ,
