@@ -23,6 +23,8 @@ class UserTDO {
     address = userData['address'] ?? '';
     secondAddress = userData['secondAddress'] ?? '';
     paymentType = userData['paymentType'] ?? '';
+    secondAddress = userData['secondAddress'];
+    paymentType = userData['paymentType'];
   }
 
   String getName() {
@@ -101,6 +103,19 @@ class UserTDO {
   }
 
   void setPaymentType(String newPaymentType) {
+
+  String getSecondAddress(){
+    return secondAddress;
+  }
+  void setSecondAddress(String newSecondAddress){
+    secondAddress = newSecondAddress;
+  }
+
+  String getPaymentType(){
+    return paymentType;
+  }
+
+  void setPaymentType(String newPaymentType){
     paymentType = newPaymentType;
   }
 }

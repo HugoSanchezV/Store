@@ -6,6 +6,7 @@ import 'package:store/controllers/userController.dart';
 import 'package:store/screens/menu.dart';
 import 'package:store/screens/orders_list_screen.dart';
 import 'package:store/screens/product_list_screen.dart';
+import 'package:store/screens/signup_screen.dart';
 import 'package:store/screens/splash_screen.dart';
 import 'package:store/tdo/productTDO.dart';
 import 'package:store/screens/formularioModificarProducto.dart';
