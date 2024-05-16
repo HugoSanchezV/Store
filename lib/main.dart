@@ -32,12 +32,8 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         title: 'My App',
-<<<<<<< HEAD
-        home: SignupScreen(),
-=======
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
->>>>>>> f0099bd205dcaf69823d6e5fe4a140caa2153819
       ),
     );
   }
