@@ -93,8 +93,8 @@ class pantallaInicial extends StatelessWidget {
                             String price = "\$${productDetails["precio"]}";
                             int cantidad = int.parse(productDetails["cantidad"].toString());
                             int descuento = int.parse(productDetails['descuento'].toString());
-                            String categoria = productDetails['categoria'];
-
+                            String categoria1 = productDetails['categoria']+ ' ';
+                            String categoria = categoria1.replaceAll('  ',' ');
                             if(categoria == nombreCategoria){
                               listaProductos.add(Producto(id: id,nombre: title, precio: price, imagenUrl: img, descuento: descuento, categoria: categoria));
                             }
@@ -189,7 +189,7 @@ class pantallaInicial extends StatelessWidget {
                                                                       child: Image.network(
                                                                         listaProductos[index].imagenUrl,
                                                                         width: double.maxFinite,
-                                                                        height: 220,
+                                                                        height: MediaQuery.of(context).size.height * 0.27,
                                                                         fit: BoxFit.cover,
                                                                       ),
                                                                     ),
@@ -221,12 +221,10 @@ class pantallaInicial extends StatelessWidget {
                                                                       Row(
                                                                         children: [
                                                                           Text(
-                                                                            listaProductos[index].nombre.length > 13
-                                                                                ? listaProductos[index].nombre.substring(0, 10) + "..."
-                                                                                : listaProductos[index].nombre,
+                                                                            listaProductos[index].nombre,
                                                                             style: TextStyle(
                                                                               color: Colors.white,
-                                                                              fontSize: 22,
+                                                                              fontSize: 16,
                                                                               fontWeight:
                                                                               FontWeight.bold,
                                                                             ),

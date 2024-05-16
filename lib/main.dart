@@ -15,12 +15,12 @@ import 'package:store/Presentation/Screens/main_screen.dart';
 import 'models/cart.dart';
 
 
-  Future<void> main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-    runApp(MyApp());
-  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -30,9 +30,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Cart()),
         // Provee el estado del carrito
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         title: 'My App',
+<<<<<<< HEAD
         home: SignupScreen(),
+=======
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
+>>>>>>> f0099bd205dcaf69823d6e5fe4a140caa2153819
       ),
     );
   }
