@@ -1,5 +1,4 @@
 class UserTDO {
-
   String name = "";
   String email = "";
   String password = "";
@@ -10,7 +9,6 @@ class UserTDO {
   String paymentType = "";
   int auth = 0;
   int admin = 0;
-
 
   UserTDO(userData) {
     name = userData['name'] ?? "";
@@ -84,14 +82,15 @@ class UserTDO {
   }
 
   String getAddress() {
-    return  address;
+    return address;
   }
 
   void setAddress(String newAddress) {
     address = newAddress;
   }
+
   String getSecondAddress() {
-    return  secondAddress;
+    return secondAddress;
   }
 
   void setSecondAddress(String newSecondAddress) {
@@ -99,23 +98,24 @@ class UserTDO {
   }
 
   String getPaymentType() {
-    return  paymentType;
-  }
-
-  void setPaymentType(String newPaymentType) {
-
-  String getSecondAddress(){
-    return secondAddress;
-  }
-  void setSecondAddress(String newSecondAddress){
-    secondAddress = newSecondAddress;
-  }
-
-  String getPaymentType(){
     return paymentType;
   }
 
-  void setPaymentType(String newPaymentType){
-    paymentType = newPaymentType;
+  void setPaymentType(String newPaymentType) {
+    String getSecondAddress() {
+      return secondAddress;
+    }
+
+    void setSecondAddress(String newSecondAddress) {
+      secondAddress = newSecondAddress;
+    }
+
+    String getPaymentType() {
+      return paymentType;
+    }
+
+    void setPaymentType(String newPaymentType) {
+      paymentType = newPaymentType;
+    }
   }
 }
