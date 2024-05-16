@@ -11,6 +11,7 @@ class UserDataScreen extends StatefulWidget {
 }
 
 class _UserDataScreenState extends State<UserDataScreen> {
+  String userid = '';
   String nombre = '';
   String correo = '';
   String telefono = '';
@@ -46,6 +47,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
               print("Coincide");
               userCurrent = userDetails;
               setState(() {
+                userid = id;
                 nombre = userDetails['name'];
                 direccion = userDetails['address'];
                 telefono = userDetails['phone'];
@@ -100,6 +102,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                   MaterialPageRoute(
                     builder: (context) =>
                         UserChangeData(
+                          userid: userid,
                           nombre: nombre,
                           telefono: telefono,
                           direccion: direccion,

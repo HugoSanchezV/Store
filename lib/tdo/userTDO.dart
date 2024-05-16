@@ -6,6 +6,8 @@ class UserTDO {
   String phone = "";
   String token = "";
   String address = "";
+  String secondAddress = "";
+  String paymentType = "";
   int auth = 0;
   int admin = 0;
 
@@ -19,6 +21,8 @@ class UserTDO {
     auth = userData['auth'] ?? 0;
     admin = userData['admin'] ?? 0;
     address = userData['address'] ?? '';
+    secondAddress = userData['secondAddress'] ?? '';
+    paymentType = userData['paymentType'] ?? '';
   }
 
   String getName() {
@@ -83,5 +87,20 @@ class UserTDO {
 
   void setAddress(String newAddress) {
     address = newAddress;
+  }
+  String getSecondAddress() {
+    return  secondAddress;
+  }
+
+  void setSecondAddress(String newSecondAddress) {
+    secondAddress = newSecondAddress;
+  }
+
+  String getPaymentType() {
+    return  paymentType;
+  }
+
+  void setPaymentType(String newPaymentType) {
+    paymentType = newPaymentType;
   }
 }

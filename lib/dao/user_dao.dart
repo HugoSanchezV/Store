@@ -43,8 +43,9 @@ class UserDao implements ApiCrud<UserTDO> {
       'token' : user.getToken(),
       'auth' : user.getAuth(),
       'admin' : user.getAdmin(),
-      'address' : user.getAddress()
-
+      'address' : user.getAddress(),
+      'secondAddress' : user.getSecondAddress(),
+      'paymentType' : user.getPaymentType()
     };
 
     collectionReferenceUsers.doc().set(userField);
@@ -63,7 +64,9 @@ class UserDao implements ApiCrud<UserTDO> {
       'token' : user.getToken(),
       'auth' : user.getAuth(),
       'admin' : user.getAdmin(),
-      'address' : user.getAddress()
+      'address' : user.getAddress(),
+      'secondAddress' : user.getSecondAddress(),
+      'paymentType' : user.getPaymentType()
     };
 
     collectionReferenceUsers.doc(id).update(userField);

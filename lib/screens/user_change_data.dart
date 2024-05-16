@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:store/screens/user_change_data.dart';
+import 'package:store/controllers/userController.dart';
+import 'package:store/tdo/userTDO.dart';
 
 class UserChangeData extends StatefulWidget {
+  final String userid;
   final String nombre;
   final String telefono;
   final String direccion;
@@ -11,6 +13,7 @@ class UserChangeData extends StatefulWidget {
 
   const UserChangeData({
     Key? key,
+    required this.userid,
     required this.nombre,
     required this.telefono,
     required this.direccion,
@@ -24,17 +27,63 @@ class UserChangeData extends StatefulWidget {
 
 class _UserChangeDataState extends State<UserChangeData> {
   final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nombreController;
+  late TextEditingController _telefonoController;
+  late TextEditingController _direccionController;
+  late TextEditingController _segundaDireccionController;
+  late TextEditingController _tipoPagoController;
+
+  String userEmail = '';
 
   @override
   void initState() {
     super.initState();
     _getUserEmail();
+    _nombreController = TextEditingController(text: widget.nombre);
+    _telefonoController = TextEditingController(text: widget.telefono);
+    _direccionController = TextEditingController(text: widget.direccion);
+    _segundaDireccionController = TextEditingController(text: widget.segundaDireccion);
+    _tipoPagoController = TextEditingController(text: widget.tipoPago);
   }
 
   void _getUserEmail() async {
     final prefs = await SharedPreferences.getInstance();
-    final userEmail = prefs.getString('userEmail') ?? '';
+    userEmail = prefs.getString('userEmail') ?? '';
     print('Correo electrónico del usuario: $userEmail');
+  }
+
+  Future<void> changeDataUser() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      UserController userController = UserController();
+      List userCurrent = await userController.getById(widget.userid);
+      var userC = userCurrent[0];
+      var email = userC['email'];
+      var password = userC['password'];
+
+      UserTDO user = UserTDO({
+        'id': widget.userid,
+        'name': _nombreController.text,
+        'phone': _telefonoController.text,
+        'address': _direccionController.text,
+        'email': email,
+        'password': password,
+          'secondAddress': _segundaDireccionController.text,
+        'paymentType': _tipoPagoController.text,
+      });
+
+      try {
+        await userController.update(widget.userid, user);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Datos actualizados correctamente')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al actualizar los datos: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -68,12 +117,12 @@ class _UserChangeDataState extends State<UserChangeData> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _nombreController,
                         decoration: InputDecoration(
                           labelText: "Ingresar nombre",
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        initialValue: widget.nombre,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu nombre';
@@ -83,12 +132,12 @@ class _UserChangeDataState extends State<UserChangeData> {
                       ),
                       SizedBox(height: 15),
                       TextFormField(
+                        controller: _telefonoController,
                         decoration: InputDecoration(
                           labelText: "Ingresar tu numero de telefono",
                           border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: Icon(Icons.phone),
                         ),
-                        initialValue: widget.telefono,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu numero de telefono';
@@ -98,12 +147,12 @@ class _UserChangeDataState extends State<UserChangeData> {
                       ),
                       SizedBox(height: 15),
                       TextFormField(
+                        controller: _direccionController,
                         decoration: InputDecoration(
                           labelText: "Ingresar dirección",
                           border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: Icon(Icons.home),
                         ),
-                        initialValue: widget.direccion,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu dirección';
@@ -113,12 +162,12 @@ class _UserChangeDataState extends State<UserChangeData> {
                       ),
                       SizedBox(height: 15),
                       TextFormField(
+                        controller: _segundaDireccionController,
                         decoration: InputDecoration(
                           labelText: "Ingresar segunda dirección",
                           border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: Icon(Icons.home),
                         ),
-                        initialValue: widget.segundaDireccion,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu segunda dirección';
@@ -128,12 +177,12 @@ class _UserChangeDataState extends State<UserChangeData> {
                       ),
                       SizedBox(height: 15),
                       TextFormField(
+                        controller: _tipoPagoController,
                         decoration: InputDecoration(
                           labelText: "Ingresar tipo de pago",
                           border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: Icon(Icons.payment),
                         ),
-                        initialValue: widget.tipoPago,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, ingresa tu tipo de pago';
@@ -143,12 +192,7 @@ class _UserChangeDataState extends State<UserChangeData> {
                       ),
                       SizedBox(height: 25),
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            // Realizar acciones con los datos
-                          }
-                        },
+                        onPressed: changeDataUser,
                         child: Text(
                           "Editar datos",
                           style: TextStyle(
