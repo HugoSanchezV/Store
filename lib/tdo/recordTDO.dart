@@ -1,9 +1,9 @@
 class RecordTDO {
-  final int idUsuario;
-  final int idProducto;
+  final String idUsuario;
+  final String idProducto;
   final int cantidad;
   final String fecha;
-  final String precio;
+  final double precio;
   final String estado;
 
 
