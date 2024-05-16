@@ -21,8 +21,8 @@ class RecordController {
   /// crea usuario, en caso de algun problema se lanza un error
   Future<void> create(RecordTDO record) async {
     // Comprobación de campos obligatorios
-    if (record.idUsuario.isNaN||
-        record.idProducto.isNaN ||
+    if (record.idUsuario.isEmpty||
+        record.idProducto.isEmpty ||
         record.cantidad.isNaN ||
         record.fecha.isEmpty) {
       throw Exception("Todos los campos obligatorios deben ser completados");

@@ -91,4 +91,25 @@ class ProductController {
       throw Exception("Ocurrio un error inesperado" + e.toString());
     }
   }
+
+  Future<bool> QuantityVerification(int quantity) async
+  {
+    ProductController productController = ProductController();
+    return await productController.getAll().then((product) {
+      for (var productsData in product) {
+        String id = productsData.keys.first;
+        Map<String, dynamic> userDetails = productsData[id];
+        for (var key in userDetails.keys) {
+          if (key == "cantidad") {
+            if(userDetails['cantidad'] > quantity){
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+      return false;
+    });
+  }
 }
