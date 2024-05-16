@@ -23,6 +23,7 @@ import 'package:store/Presentation/Screens/main_screen.dart';
     Widget build(BuildContext context) {
       return MaterialApp(
         title: 'My App',
+        debugShowCheckedModeBanner: false,
         home:  principalCliente(),
       );
     }

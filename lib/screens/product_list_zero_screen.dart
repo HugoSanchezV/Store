@@ -128,11 +128,12 @@ class _ProductListAMZeroState extends State<ProductListZeroAM> {
                           String description =
                               "${productDetails["descripcion"].toString().substring(0, 17)}...";
                           String price = "\$${productDetails["precio"]}";
+                          int n = int.parse(productDetails["cantidad"].toString());
                           int cantidad = int.parse(productDetails["cantidad"].toString());
 
-                          if (cantidad == 0) {
+                          if (n == 0) {
                             return Container(
-                              margin: EdgeInsets.symmetric(vertical: 15),
+                              margin: const EdgeInsets.symmetric(vertical: 15),
                               child: Row (
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
